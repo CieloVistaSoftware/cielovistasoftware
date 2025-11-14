@@ -35,8 +35,9 @@ window.siteConfig = {
         // Redirect to article in ad mode
         if (window.siteConfig.mode === 'ad') {
             const path = window.location.pathname;
-            // Check if we're on index page (/, /index.html, or ends with /)
-            if (path === '/' || path.endsWith('/') || path.endsWith('index.html')) {
+            // Check if we're on index page and not already on article page
+            if (!path.includes('article.html') && 
+                (path === '/' || path.endsWith('/') || path.endsWith('index.html') || path.endsWith('cielovistasoftware'))) {
                 window.location.href = window.siteConfig.adMode.articlePage;
             }
         }
