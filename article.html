@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.I. Code Quality Article - CieloVista Software</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mode-styles.css">
+    <style>
+        .article-container {
+            max-width: 900px;
+            margin: 100px auto 40px;
+            padding: 40px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .article-container h1 {
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .article-container h2 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin: 30px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .article-container h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin: 20px 0 10px;
+        }
+        
+        .article-meta {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin: 20px 0;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-meta p {
+            margin: 5px 0;
+        }
+        
+        .abstract {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-left: 4px solid var(--accent-color);
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+        
+        .abstract p {
+            color: var(--text-paragraph);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .article-container p {
+            color: var(--text-paragraph);
+            line-height: 1.8;
+            margin: 15px 0;
+            font-size: 1.05rem;
+        }
+        
+        .article-container strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .article-container ul,
+        .article-container ol {
+            color: var(--text-paragraph);
+            margin: 15px 0 15px 30px;
+            line-height: 1.8;
+        }
+        
+        .article-container li {
+            margin: 10px 0;
+        }
+        
+        .highlight-box {
+            background: var(--bg-primary);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .highlight-box p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin: 5px 0;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+            padding: 30px;
+            border-radius: 10px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            color: var(--text-secondary);
+            border: none;
+            margin: 0 0 20px 0;
+        }
+        
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+        
+        .keywords {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.95rem;
+            margin: 20px 0;
+        }
+        
+        .hashtags {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin: 30px 0;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 40px 0;
+        }
+        
+        .author-info {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+        
+        .author-info p {
+            color: var(--text-primary);
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>📘 CieloVista Software</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#article">Article</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="theme-selector">
+                <select id="themeDropdown">
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="forest">Forest</option>
+                    <option value="sunset">Sunset</option>
+                    <option value="midnight">Midnight</option>
+                    <option value="crimson">Crimson</option>
+                    <option value="coffee">Coffee</option>
+                    <option value="slate">Slate</option>
+                    <option value="mint">Mint</option>
+                    <option value="lavender">Lavender</option>
+                    <option value="coral">Coral</option>
+                    <option value="navy">Navy</option>
+                    <option value="rose">Rose</option>
+                    <option value="emerald">Emerald</option>
+                    <option value="amber">Amber</option>
+                    <option value="indigo">Indigo</option>
+                    <option value="teal">Teal</option>
+                    <option value="magenta">Magenta</option>
+                    <option value="charcoal">Charcoal</option>
+                    <option value="olive">Olive</option>
+                    <option value="burgundy">Burgundy</option>
+                    <option value="turquoise">Turquoise</option>
+                    <option value="peach">Peach</option>
+                    <option value="steel">Steel</option>
+                    <option value="lime">Lime</option>
+                    <option value="plum">Plum</option>
+                    <option value="sand">Sand</option>
+                    <option value="cherry">Cherry</option>
+                    <option value="arctic">Arctic</option>
+                    <option value="neon">Neon</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main id="article" class="article-container">
+        <p style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">A.I. CODE QUALITY AND SYSTEMATIC-DEVELOPMENT</p>
+        
+        <h1>A.I. Code Looked Perfect. Every Test Passed. Then Reality Hit.</h1>
+        
+        <div class="article-meta">
+            <p><strong>A Controlled Experiment in A.I.-Assisted Development</strong></p>
+            <p style="margin-top: 15px;">John W. Peters | CieloVista Software | November 14, 2025</p>
+        </div>
+
+        <div class="abstract">
+            <h2 style="margin-top: 0; font-size: 1.5rem;">Abstract</h2>
+            <p>A checkout function in an ecommerce website with perfect test metrics failed all production scenarios.</p>
+            <p><strong>Experiment:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li><strong>A.I.-Only (vibe) (8 hours)</strong>
+                    <ul style="margin-left: 20px;">
+                        <li>Required 128 total hours including firefighting</li>
+                    </ul>
+                </li>
+                <li><strong>Systematic-Development (80 hours)</strong>
+                    <ul style="margin-left: 20px;">
+                        <li>Achieved production readiness with zero issues—37% faster</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><strong>Key Findings:</strong></p>
+            <ul style="margin-left: 20px;">
+                <li>A.I. introduces 10+ regressions per 1,000 lines</li>
+                <li>Mocks hide 83-100% of failures</li>
+                <li>Quality metrics don't predict production viability</li>
+            </ul>
+            <p class="keywords"><strong>Keywords:</strong> artificial intelligence, code quality, systematic testing</p>
+        </div>
+
+        <h2>The Experiment</h2>
+        <ul>
+            <li><strong>A.I.-Only (vibe) (8 hours)</strong>
+                <ul style="margin-left: 20px;">
+                    <li>Let A.I. write code and tests, deploy when tests pass</li>
+                </ul>
+            </li>
+            <li><strong>Systematic-Development (80 hours)</strong>
+                <ul style="margin-left: 20px;">
+                    <li>Test boundaries, use real systems, inject failures, review for regressions</li>
+                </ul>
+            </li>
+        </ul>
+        <p>Both tested against 10 production scenarios (concurrent checkouts, timeouts, database failures, etc.)</p>
+
+        <hr>
+
+        <h2>THE RESULTS</h2>
+        <div class="highlight-box">
+            <ul>
+                <li><strong>A.I.-Only (vibe):</strong>
+                    <ul>
+                        <li style="color: #ff4444; list-style-type: none;">❌ 0/10 scenarios passing</li>
+                        <li style="color: #ff4444; list-style-type: none;">❌ 23 bugs (post-deploy)</li>
+                        <li style="color: #ff4444; list-style-type: none;">❌ 5 regressions</li>
+                        <li style="color: #ff4444; list-style-type: none;">❌ 128 hours total (8 dev + 120 firefighting)</li>
+                    </ul>
+                </li>
+                <li><strong>Systematic:</strong>
+                    <ul>
+                        <li style="color: #44ff44; list-style-type: none;">✓ 10/10 scenarios passing</li>
+                        <li style="color: #44ff44; list-style-type: none;">✓ 23 bugs found pre-deploy</li>
+                        <li style="color: #44ff44; list-style-type: none;">✓ 0 regressions</li>
+                        <li>80 hours (zero firefighting)</li>
+                    </ul>
+                </li>
+                <li style="font-size: 1.4rem; margin-top: 20px;"><strong>Impact:</strong>
+                    <ul>
+                        <li>10x testing investment = 37% faster to production readiness</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2>KEY FINDINGS</h2>
+        <ul>
+            <li><strong>Regressions:</strong> 1+ per 1,000 lines. A.I.'s tests caught zero.</li>
+            <li><strong>Coverage ≠ Quality:</strong> 94% coverage, 0% boundary coverage.</li>
+            <li><strong>Mocks Hide Reality:</strong> Real systems revealed 83-100% more failures.</li>
+            <li><strong>Metrics Lag:</strong> Perfect scores, 0% production-ready.</li>
+            <li><strong>Systematic Wins:</strong> 23 bugs prevented, 128 hours saved, 37% faster delivery.</li>
+            <li><strong>Speed Myth:</strong> 127 tests = 25 seconds. 21 seconds prevents 128 hours firefighting.</li>
+        </ul>
+
+        <hr>
+
+        <h2>THE SOLUTION</h2>
+        <p>Complete testing framework, protocols, and implementation guides detailed in the books below.</p>
+
+        <hr>
+
+        <h2>PRACTICAL APPLICATION</h2>
+        <ol>
+            <li>Test boundaries systematically</li>
+            <li>Use real systems (not mocks)</li>
+            <li>Review A.I. iterations for regressions</li>
+            <li>Measure production viability</li>
+            <li>Invest in verification upfront</li>
+            <li>Define production scenarios first</li>
+        </ol>
+
+        <hr>
+
+        <h2>CONCLUSION</h2>
+        <p>Perfect metrics ≠ production-ready. Systematic verification transforms A.I. code from liability to asset.</p>
+        <div class="highlight-box">
+            <p><strong>10x testing = 37% faster delivery + zero firefighting</strong></p>
+        </div>
+
+        <hr>
+
+        <div class="cta-section">
+            <h2>WHAT'S NEXT</h2>
+            <p style="font-size: 1.3rem; font-weight: 600;">"Systematic-Development: Turning A.I. Code into Production-Ready Software"</p>
+            <p>📘 Practitioner Edition: $29.99 | 📕 Master Edition: $69.99 | <strong>Coming Q4 2025</strong></p>
+            <br>
+            <p><strong>💬 Comment "SYSTEMATIC" for early access</strong></p>
+            <p><strong>🔄 Share your A.I. code quality experiences</strong></p>
+            <p><strong>👉 Follow for A.I.-assisted development insights</strong></p>
+        </div>
+
+        <p class="hashtags">
+            #SoftwareDevelopment #A.I. #ArtificialIntelligence #CodeQuality #Engineering #Testing #ProductionReady #SoftwareEngineering #DevOps #CICD #QualityAssurance #TechLeadership #A.I.Assisted #SystematicDevelopment
+        </p>
+
+        <div class="author-info">
+            <p><strong>About the Author:</strong> Owner at CieloVista Software | 30+ years experience</p>
+            <p><a href="https://CieloVistaSoftware.com" style="color: var(--accent-color);">CieloVistaSoftware.com</a> | <a href="mailto:jwpminnesota@gmail.com" style="color: var(--accent-color);">jwpminnesota@gmail.com</a></p>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-header); color: var(--text-secondary); padding: 30px 20px; text-align: center; border-top: 2px solid var(--border-color);">
+        <div class="container">
+            <p>&copy; 2025 CieloVista Software. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Welcome to our website">
+    <title>Welcome to CieloVista Software</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mode-styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>CieloVista Software</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="theme-selector">
+                <select id="themeDropdown">
+                    <option value="dark">Dark Theme</option>
+                    <option value="light">Light Theme</option>
+                    <option value="ocean">Ocean Blue</option>
+                    <option value="forest">Forest Green</option>
+                    <option value="sunset">Sunset Orange</option>
+                    <option value="midnight">Midnight Purple</option>
+                    <option value="crimson">Crimson Red</option>
+                    <option value="coffee">Coffee Brown</option>
+                    <option value="slate">Slate Gray</option>
+                    <option value="mint">Mint Fresh</option>
+                    <option value="lavender">Lavender Dream</option>
+                    <option value="coral">Coral Reef</option>
+                    <option value="navy">Navy Professional</option>
+                    <option value="rose">Rose Gold</option>
+                    <option value="emerald">Emerald Green</option>
+                    <option value="amber">Amber Glow</option>
+                    <option value="indigo">Indigo Night</option>
+                    <option value="teal">Teal Wave</option>
+                    <option value="magenta">Magenta Vibe</option>
+                    <option value="charcoal">Charcoal</option>
+                    <option value="olive">Olive Garden</option>
+                    <option value="burgundy">Burgundy Wine</option>
+                    <option value="turquoise">Turquoise Bay</option>
+                    <option value="peach">Peach Soft</option>
+                    <option value="steel">Steel Blue</option>
+                    <option value="lime">Lime Green</option>
+                    <option value="plum">Plum Purple</option>
+                    <option value="sand">Sandy Beach</option>
+                    <option value="cherry">Cherry Blossom</option>
+                    <option value="arctic">Arctic White</option>
+                    <option value="neon">Neon Cyber</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h2>Welcome to CieloVista Software</h2>
+                <p>Building innovative solutions for your business needs</p>
+                <button class="cta-button">Get Started</button>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <h2>About Us</h2>
+                <p>We are a dedicated team of professionals committed to delivering high-quality software solutions that drive business growth and innovation.</p>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <div class="container">
+                <h2>Our Services</h2>
+                <div class="service-grid">
+                    <div class="service-card">
+                        <h3>Web Development</h3>
+                        <p>Custom web applications tailored to your needs</p>
+                    </div>
+                    <div class="service-card">
+                        <h3>Mobile Apps</h3>
+                        <p>Native and cross-platform mobile solutions</p>
+                    </div>
+                    <div class="service-card">
+                        <h3>Cloud Services</h3>
+                        <p>Scalable cloud infrastructure and deployment</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="container">
+                <h2>Contact Us</h2>
+                <p class="contact-intro">Have a question or want to work together? Send us an email!</p>
+                <div class="contact-info">
+                    <div class="email-display">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <a href="mailto:contact@cielovista.com" class="email-link">contact@cielovista.com</a>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CieloVista Software. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="script.js" type="module"></script>
+</body>
+</html>

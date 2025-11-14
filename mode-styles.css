@@ -1,0 +1,33 @@
+/* Mode-specific styles */
+
+/* Ad Mode Styles */
+body.mode-ad .promo-banner {
+    display: block !important;
+}
+
+body.mode-ad .special-offers {
+    display: block !important;
+}
+
+body.mode-ad .nav-links {
+    display: none !important;
+}
+
+/* Regular Mode Styles */
+body.mode-regular .promo-banner {
+    display: none !important;
+}
+
+body.mode-regular .special-offers {
+    display: none !important;
+}
+
+body.mode-regular .nav-links {
+    display: flex !important;
+}
+
+/* Default hidden elements */
+.promo-banner,
+.special-offers {
+    display: none;
+}
