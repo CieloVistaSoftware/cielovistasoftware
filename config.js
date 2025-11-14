@@ -33,9 +33,12 @@ window.siteConfig = {
         console.log('✅ Site mode applied:', window.siteConfig.mode);
         
         // Redirect to article in ad mode
-        if (window.siteConfig.mode === 'ad' && 
-            window.location.pathname.endsWith('index.html')) {
-            window.location.href = window.siteConfig.adMode.articlePage;
+        if (window.siteConfig.mode === 'ad') {
+            const path = window.location.pathname;
+            // Check if we're on index page (/, /index.html, or ends with /)
+            if (path === '/' || path.endsWith('/') || path.endsWith('index.html')) {
+                window.location.href = window.siteConfig.adMode.articlePage;
+            }
         }
     });
 })();
