@@ -7,8 +7,11 @@ export function loadFromStorage() {
   const elements = getElements();
   const saved = localStorage.getItem('currentProject');
   
-  // Get default project name from current folder/path
-  const defaultName = window.location.pathname.split('/').filter(Boolean).pop() || 'pro-website-creator';
+  // Get default project name from folder containing index.html
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  // Remove index.html or any .html file from the end
+  const cleanPath = pathParts.filter(part => !part.endsWith('.html'));
+  const defaultName = cleanPath[cleanPath.length - 1] || 'pro-website-creator';
   
   if (saved) {
     const data = JSON.parse(saved);
