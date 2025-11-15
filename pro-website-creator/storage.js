@@ -7,16 +7,20 @@ export function loadFromStorage() {
   const elements = getElements();
   const saved = localStorage.getItem('currentProject');
   
+  // Get default project name from current folder/path
+  const defaultName = window.location.pathname.split('/').filter(Boolean).pop() || 'pro-website-creator';
+  
   if (saved) {
     const data = JSON.parse(saved);
     elements.htmlEditor.value = data.html || defaults.html;
     elements.cssEditor.value = data.css || defaults.css;
     elements.jsEditor.value = data.js || defaults.js;
-    elements.projectName.textContent = data.name || 'Untitled Project';
+    elements.projectName.textContent = data.name || defaultName;
   } else {
     elements.htmlEditor.value = defaults.html;
     elements.cssEditor.value = defaults.css;
     elements.jsEditor.value = defaults.js;
+    elements.projectName.textContent = defaultName;
   }
   
   addToHistory('html');
