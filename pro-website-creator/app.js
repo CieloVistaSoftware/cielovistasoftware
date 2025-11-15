@@ -1,7 +1,7 @@
 import { loadFromStorage } from './storage.js';
 import { setupEventListeners, startAutoSave } from './events.js';
 import { updatePreview } from './preview.js';
-import { switchTab } from './tabs.js';
+import { switchTab, updateLineNumbers } from './tabs.js';
 import { undo, redo } from './history.js';
 import { 
   openModal, 
@@ -20,6 +20,7 @@ import {
   importProject,
   downloadWebsite
 } from './helpers.js';
+import { getElements } from './dom.js';
 
 export function init() {
   loadFromStorage();
@@ -27,6 +28,12 @@ export function init() {
   setupProjectNameEditing();
   startAutoSave();
   updatePreview();
+  
+  // Initialize line numbers for all editors
+  const elements = getElements();
+  updateLineNumbers(elements.htmlEditor, 'lineNumbersHtml');
+  updateLineNumbers(elements.cssEditor, 'lineNumbersCss');
+  updateLineNumbers(elements.jsEditor, 'lineNumbersJs');
 }
 
 // Expose functions to window for onclick handlers

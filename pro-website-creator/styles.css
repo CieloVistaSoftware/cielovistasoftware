@@ -104,6 +104,7 @@ button:active {
   flex: 1;
   background: #0d1117;
   height: calc(100vh - 180px);
+  position: relative;
 }
 
 .line-numbers {
@@ -122,6 +123,26 @@ button:active {
   white-space: pre;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+}
+
+.line-numbers:hover {
+  color: #8b949e;
+}
+
+.line-number {
+  transition: all 0.2s;
+}
+
+.line-number:hover {
+  color: #58a6ff;
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.line-number.active {
+  color: #58a6ff;
+  background: rgba(88, 166, 255, 0.2);
+  font-weight: bold;
 }
 
 textarea {
@@ -138,6 +159,17 @@ textarea {
   outline: none;
   position: relative;
   z-index: 1;
+}
+
+.line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgba(88, 166, 255, 0.15);
+  pointer-events: none;
+  z-index: 0;
+  height: 1.6em;
+  border-left: 3px solid #58a6ff;
 }
 
 .editor-toolbar {
