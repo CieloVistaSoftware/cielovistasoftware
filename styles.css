@@ -23,6 +23,14 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -33,11 +41,9 @@ h1, h2, h3, h4, h5, h6 {
 header {
     background-color: var(--bg-header);
     color: var(--text-secondary);
-    padding: 1rem 0;
-    position: fixed;
+    padding: 1.5rem 0;
+    position: relative;
     width: 100%;
-    top: 0;
-    z-index: 1000;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     transition: background-color 0.3s;
 }
@@ -60,6 +66,16 @@ nav {
 .logo h1 {
     font-size: 1.5rem;
     color: var(--text-secondary);
+    margin: 0;
+}
+
+.logo h2 {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--accent-color);
+    margin: 5px 0 0 0;
+    font-style: italic;
+    letter-spacing: 0.5px;
 }
 
 .nav-links {
