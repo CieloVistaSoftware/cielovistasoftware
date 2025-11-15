@@ -194,6 +194,32 @@ export function setupEmojis() {
   });
 }
 
+// Setup project name editing
+export function setupProjectNameEditing() {
+  const projectNameEl = document.getElementById('projectName');
+  if (!projectNameEl) return;
+  
+  projectNameEl.addEventListener('blur', () => {
+    // Save to localStorage when edited
+    const elements = getElements();
+    const data = {
+      name: projectNameEl.textContent,
+      html: elements.htmlEditor.value,
+      css: elements.cssEditor.value,
+      js: elements.jsEditor.value
+    };
+    localStorage.setItem('currentProject', JSON.stringify(data));
+  });
+  
+  projectNameEl.addEventListener('keydown', (e) => {
+    // Press Enter to save and unfocus
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      projectNameEl.blur();
+    }
+  });
+}
+
 // Projects
 export function saveProject() {
   const elements = getElements();

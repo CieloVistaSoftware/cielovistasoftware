@@ -32,6 +32,8 @@ body {
   margin-bottom: 0.2rem;
   overflow-x: auto;
   padding-bottom: 0.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 button {
@@ -97,7 +99,8 @@ button:active {
 }
 
 .editor-wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   flex: 1;
   background: #0d1117;
   height: calc(100vh - 180px);
@@ -113,8 +116,12 @@ button:active {
   text-align: right;
   user-select: none;
   overflow-y: auto;
+  overflow-x: hidden;
   border-right: 1px solid #30363d;
   min-width: 50px;
+  white-space: pre;
+  display: flex;
+  flex-direction: column;
 }
 
 textarea {
@@ -165,6 +172,25 @@ textarea {
   color: #8b949e;
   font-size: 0.8rem;
   border-bottom: 1px solid #30363d;
+}
+
+#projectName {
+  cursor: text;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  transition: all 0.2s;
+  outline: none;
+}
+
+#projectName:hover {
+  background: #30363d;
+  color: #c9d1d9;
+}
+
+#projectName:focus {
+  background: #0d1117;
+  color: #58a6ff;
+  border: 1px solid #58a6ff;
 }
 
 .preview-section {

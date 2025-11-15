@@ -12,6 +12,7 @@ import {
   loadTemplate,
   insertSnippet,
   setupEmojis,
+  setupProjectNameEditing,
   saveProject,
   loadProject,
   deleteProject,
@@ -23,6 +24,7 @@ import {
 export function init() {
   loadFromStorage();
   setupEventListeners();
+  setupProjectNameEditing();
   startAutoSave();
   updatePreview();
 }

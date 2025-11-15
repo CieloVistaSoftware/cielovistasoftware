@@ -14,20 +14,17 @@
       <button class="btn-purple" onclick="openModal('templates')">📚 Templates</button>
       <button class="btn-primary" onclick="openModal('snippets')">⚡ Snippets</button>
       <button class="btn-success" onclick="openModal('projects')">💾 Projects</button>
-      <button class="view-btn" onclick="switchView('editor')">✏️ Edit</button>
-      <button class="view-btn" onclick="switchView('preview')">👁️ Preview</button>
-    </div>
-
-    <div class="button-row">
       <button class="btn-orange" onclick="openModal('tutorial')">📖 Tutorial</button>
       <button class="btn-primary" onclick="undo()">↶ Undo</button>
       <button class="btn-primary" onclick="redo()">↷ Redo</button>
+      <button class="view-btn" onclick="switchView('editor')">✏️ Edit</button>
+      <button class="view-btn" onclick="switchView('preview')">👁️ Preview</button>
       <button class="btn-purple" onclick="downloadWebsite()">⬇️ Download</button>
     </div>
   </div>
 
   <div class="status-bar">
-    <span id="projectName">Untitled Project</span>
+    <span id="projectName" contenteditable="true" title="Click to edit project name">Untitled Project</span>
     <span id="autoSaveStatus">✅ Auto-saved</span>
   </div>
 
