@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Website Creator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <h1>🚀 Pro Website Creator</h1>
+    
+    <div class="button-row">
+      <button class="btn-purple" onclick="openModal('templates')">📚 Templates</button>
+      <button class="btn-primary" onclick="openModal('snippets')">⚡ Snippets</button>
+      <button class="btn-success" onclick="openModal('projects')">💾 Projects</button>
+    </div>
+
+    <div class="button-row">
+      <button class="btn-orange" onclick="openModal('tutorial')">📖 Tutorial</button>
+      <button class="btn-primary" onclick="undo()">↶ Undo</button>
+      <button class="btn-primary" onclick="redo()">↷ Redo</button>
+      <button class="btn-purple" onclick="downloadWebsite()">⬇️ Download</button>
+    </div>
+
+    <div class="view-mode">
+      <button class="view-btn active" onclick="switchView('editor')">✏️ Edit</button>
+      <button class="view-btn" onclick="switchView('preview')">👁️ Preview</button>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span id="projectName">Untitled Project</span>
+    <span id="autoSaveStatus">✅ Auto-saved</span>
+  </div>
+
+  <div class="editor-section" id="editorSection">
+    <div class="editor-toolbar">
+      <button class="tool-btn" onclick="insertElement('h1')">H1</button>
+      <button class="tool-btn" onclick="insertElement('h2')">H2</button>
+      <button class="tool-btn" onclick="insertElement('p')">P</button>
+      <button class="tool-btn" onclick="insertElement('button')">Button</button>
+      <button class="tool-btn" onclick="insertElement('img')">🖼️ Image</button>
+      <button class="tool-btn" onclick="insertElement('link')">🔗 Link</button>
+      <button class="tool-btn" onclick="openModal('emoji')">😊 Emoji</button>
+      <button class="tool-btn" onclick="formatCode()">✨ Format</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('html')">HTML</button>
+      <button class="tab" onclick="switchTab('css')">CSS</button>
+      <button class="tab" onclick="switchTab('js')">JS</button>
+    </div>
+
+    <div class="editor-wrapper" id="htmlWrapper">
+      <div class="line-numbers" id="lineNumbersHtml">1</div>
+      <textarea id="htmlEditor"></textarea>
+    </div>
+    <div class="editor-wrapper" id="cssWrapper" style="display: none;">
+      <div class="line-numbers" id="lineNumbersCss">1</div>
+      <textarea id="cssEditor" style="display: none;"></textarea>
+    </div>
+    <div class="editor-wrapper" id="jsWrapper" style="display: none;">
+      <div class="line-numbers" id="lineNumbersJs">1</div>
+      <textarea id="jsEditor" style="display: none;"></textarea>
+    </div>
+  </div>
+
+  <div class="preview-section" id="previewSection">
+    <iframe id="preview"></iframe>
+  </div>
+
+  <!-- Templates Modal -->
+  <div class="modal" id="templatesModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📚 Templates</h2>
+        <button class="close-btn" onclick="closeModal('templates')">✕</button>
+      </div>
+      <div class="template-grid">
+        <div class="template-card" onclick="loadTemplate('basic')">
+          <h3>🌟 Basic</h3>
+          <p>Simple starter template</p>
+        </div>
+        <div class="template-card" onclick="loadTemplate('portfolio')">
+          <h3>💼 Portfolio</h3>
+          <p>Showcase your work</p>
+        </div>
+        <div class="template-card" onclick="loadTemplate('landing')">
+          <h3>🚀 Landing Page</h3>
+          <p>Product landing page</p>
+        </div>
+        <div class="template-card" onclick="loadTemplate('blog')">
+          <h3>📝 Blog</h3>
+          <p>Article-focused layout</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Snippets Modal -->
+  <div class="modal" id="snippetsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚡ Code Snippets</h2>
+        <button class="close-btn" onclick="closeModal('snippets')">✕</button>
+      </div>
+      <button class="snippet-btn" onclick="insertSnippet('navbar')">Navigation Bar</button>
+      <button class="snippet-btn" onclick="insertSnippet('hero')">Hero Section</button>
+      <button class="snippet-btn" onclick="insertSnippet('footer')">Footer</button>
+      <button class="snippet-btn" onclick="insertSnippet('form')">Contact Form</button>
+      <button class="snippet-btn" onclick="insertSnippet('card')">Card Component</button>
+    </div>
+  </div>
+
+  <!-- Projects Modal -->
+  <div class="modal" id="projectsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💾 My Projects</h2>
+        <button class="close-btn" onclick="closeModal('projects')">✕</button>
+      </div>
+      <input type="text" id="projectNameInput" placeholder="Project Name" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; background: #252526; border: 1px solid #3e3e42; color: white; border-radius: 4px;">
+      <button class="btn-success" style="width: 100%; margin: 0.5rem 0;" onclick="saveProject()">💾 Save Current Project</button>
+      <button class="btn-primary" style="width: 100%; margin: 0.5rem 0;" onclick="exportProject()">📤 Export Project</button>
+      <button class="btn-orange" style="width: 100%; margin: 0.5rem 0;" onclick="document.getElementById('importFile').click()">📥 Import Project</button>
+      <input type="file" id="importFile" style="display: none;" onchange="importProject(event)" accept=".json">
+      
+      <h3 style="margin: 1rem 0;">Saved Projects</h3>
+      <div id="projectsList"></div>
+    </div>
+  </div>
+
+  <!-- Emoji Modal -->
+  <div class="modal" id="emojiModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>😊 Emoji Picker</h2>
+        <button class="close-btn" onclick="closeModal('emoji')">✕</button>
+      </div>
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+  </div>
+
+  <!-- Tutorial Modal -->
+  <div class="modal" id="tutorialModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📖 Tutorial</h2>
+        <button class="close-btn" onclick="closeModal('tutorial')">✕</button>
+      </div>
+      
+      <div class="tutorial-step">
+        <h3>1️⃣ Getting Started</h3>
+        <p>Use the tabs to switch between HTML, CSS, and JavaScript. Edit your code in the editor and click Preview to see changes!</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3>2️⃣ Using Templates</h3>
+        <p>Click Templates button to load pre-made designs. Choose from Portfolio, Blog, and more!</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3>3️⃣ Quick Elements</h3>
+        <p>Use the toolbar buttons (H1, H2, P, Button) to quickly insert HTML elements.</p>
+      </div>
+
+      <div class="tutorial-step">
+        <h3>4️⃣ Download</h3>
+        <p>When you're done, click Download to get your complete website as a single HTML file!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Pro Website Creator - All features included!
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
