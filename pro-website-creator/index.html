@@ -14,6 +14,8 @@
       <button class="btn-purple" onclick="openModal('templates')">📚 Templates</button>
       <button class="btn-primary" onclick="openModal('snippets')">⚡ Snippets</button>
       <button class="btn-success" onclick="openModal('projects')">💾 Projects</button>
+      <button class="view-btn" onclick="switchView('editor')">✏️ Edit</button>
+      <button class="view-btn" onclick="switchView('preview')">👁️ Preview</button>
     </div>
 
     <div class="button-row">
@@ -21,11 +23,6 @@
       <button class="btn-primary" onclick="undo()">↶ Undo</button>
       <button class="btn-primary" onclick="redo()">↷ Redo</button>
       <button class="btn-purple" onclick="downloadWebsite()">⬇️ Download</button>
-    </div>
-
-    <div class="view-mode">
-      <button class="view-btn active" onclick="switchView('editor')">✏️ Edit</button>
-      <button class="view-btn" onclick="switchView('preview')">👁️ Preview</button>
     </div>
   </div>
 
@@ -120,7 +117,7 @@
         <h2>💾 My Projects</h2>
         <button class="close-btn" onclick="closeModal('projects')">✕</button>
       </div>
-      <input type="text" id="projectNameInput" placeholder="Project Name" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; background: #252526; border: 1px solid #3e3e42; color: white; border-radius: 4px;">
+      <input type="text" id="projectNameInput" placeholder="Project Name" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 4px;">
       <button class="btn-success" style="width: 100%; margin: 0.5rem 0;" onclick="saveProject()">💾 Save Current Project</button>
       <button class="btn-primary" style="width: 100%; margin: 0.5rem 0;" onclick="exportProject()">📤 Export Project</button>
       <button class="btn-orange" style="width: 100%; margin: 0.5rem 0;" onclick="document.getElementById('importFile').click()">📥 Import Project</button>

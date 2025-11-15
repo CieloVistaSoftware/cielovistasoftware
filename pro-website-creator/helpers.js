@@ -36,11 +36,21 @@ export function switchView(view) {
   if (view === 'editor') {
     editorSection.classList.remove('hidden');
     previewSection.classList.remove('active');
-    viewBtns[0].classList.add('active');
+    // Set Edit button active
+    viewBtns.forEach(btn => {
+      if (btn.textContent.includes('Edit')) {
+        btn.classList.add('active');
+      }
+    });
   } else {
     editorSection.classList.add('hidden');
     previewSection.classList.add('active');
-    viewBtns[1].classList.add('active');
+    // Set Preview button active
+    viewBtns.forEach(btn => {
+      if (btn.textContent.includes('Preview')) {
+        btn.classList.add('active');
+      }
+    });
     updatePreview();
   }
 }

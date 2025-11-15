@@ -6,17 +6,18 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #1a1a2e;
-  color: white;
+  background: #0d1117;
+  color: #c9d1d9;
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
 .header {
-  background: #16213e;
+  background: #161b22;
   padding: 0.3rem 0.5rem;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  border-bottom: 1px solid #30363d;
 }
 
 .header h1 {
@@ -57,11 +58,12 @@ button:active {
 
 .tabs {
   display: flex;
-  background: #0f3460;
+  background: #161b22;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
   z-index: 10;
+  border-bottom: 1px solid #30363d;
 }
 
 .tab {
@@ -69,7 +71,7 @@ button:active {
   padding: 0.9rem;
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #8b949e;
   font-size: 1rem;
   font-weight: 600;
   transition: all 0.3s;
@@ -78,13 +80,14 @@ button:active {
 }
 
 .tab:hover {
-  background: rgba(26, 26, 46, 0.7);
-  color: #e2e8f0;
+  background: #21262d;
+  color: #c9d1d9;
 }
 
 .tab.active {
-  background: #1a1a2e;
-  color: white;
+  background: #0d1117;
+  color: #58a6ff;
+  border-bottom: 2px solid #58a6ff;
 }
 
 .editor-section {
@@ -96,20 +99,21 @@ button:active {
 .editor-wrapper {
   display: flex;
   flex: 1;
-  background: #1e1e1e;
+  background: #0d1117;
+  height: calc(100vh - 180px);
 }
 
 .line-numbers {
   padding: 1rem 0.5rem;
-  background: #252526;
-  color: #858585;
+  background: #161b22;
+  color: #6e7681;
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 14px;
   line-height: 1.6;
   text-align: right;
   user-select: none;
-  overflow: hidden;
-  border-right: 1px solid #3e3e42;
+  overflow-y: auto;
+  border-right: 1px solid #30363d;
   min-width: 50px;
 }
 
@@ -117,8 +121,8 @@ textarea {
   width: 100%;
   flex: 1;
   padding: 1rem;
-  background: #1e1e1e;
-  color: #d4d4d4;
+  background: #0d1117;
+  color: #c9d1d9;
   border: none;
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 14px;
@@ -133,16 +137,16 @@ textarea {
   display: flex;
   gap: 0.25rem;
   padding: 0.5rem;
-  background: #252526;
-  border-bottom: 1px solid #3e3e42;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
   flex-wrap: wrap;
 }
 
 .tool-btn {
   padding: 0.4rem 0.6rem;
-  background: #3e3e42;
-  color: #cccccc;
-  border: none;
+  background: #21262d;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
   border-radius: 3px;
   font-size: 0.75rem;
   cursor: pointer;
@@ -150,16 +154,17 @@ textarea {
 }
 
 .tool-btn:hover {
-  background: #505050;
+  background: #30363d;
 }
 
 .status-bar {
   display: flex;
   justify-content: space-between;
   padding: 0.3rem 1rem;
-  background: #007acc;
-  color: white;
+  background: #21262d;
+  color: #8b949e;
   font-size: 0.8rem;
+  border-bottom: 1px solid #30363d;
 }
 
 .preview-section {
@@ -175,30 +180,29 @@ textarea {
   display: none;
 }
 
-.view-mode {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  margin-top: 0.3rem;
-}
-
 .view-btn {
-  padding: 0.5rem 1rem;
-  background: #0f3460;
-  color: #94a3b8;
-  border: none;
+  padding: 0.35rem 0.5rem;
+  background: #21262d;
+  color: #8b949e;
+  border: 1px solid #30363d;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .view-btn.active {
-  background: #3b82f6;
-  color: white;
+  background: #58a6ff;
+  color: #0d1117;
+  border-color: #58a6ff;
 }
 
 .view-btn:hover {
-  background: #1e4976;
+  background: #30363d;
+  color: #c9d1d9;
 }
 
 .modal {
@@ -219,13 +223,14 @@ textarea {
 }
 
 .modal-content {
-  background: #1a1a2e;
+  background: #161b22;
   padding: 1.5rem;
   border-radius: 10px;
   max-width: 90%;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid #30363d;
 }
 
 .modal-header {
@@ -263,11 +268,12 @@ iframe {
 }
 
 .footer {
-  background: #16213e;
+  background: #161b22;
   padding: 0.5rem;
   text-align: center;
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #8b949e;
+  border-top: 1px solid #30363d;
 }
 
 .template-grid {
@@ -278,16 +284,16 @@ iframe {
 }
 
 .template-card {
-  background: #252526;
+  background: #0d1117;
   padding: 1.5rem;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
-  border: 2px solid transparent;
+  border: 2px solid #30363d;
 }
 
 .template-card:hover {
-  background: #2d2d30;
+  background: #161b22;
   border-color: #3b82f6;
   transform: translateY(-2px);
 }
@@ -306,9 +312,9 @@ iframe {
   width: 100%;
   padding: 1rem;
   margin: 0.5rem 0;
-  background: #252526;
-  color: white;
-  border: 1px solid #3e3e42;
+  background: #0d1117;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s;
@@ -331,7 +337,7 @@ iframe {
   padding: 0.5rem;
   font-size: 1.5rem;
   background: none;
-  border: 1px solid #3e3e42;
+  border: 1px solid #30363d;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -343,7 +349,7 @@ iframe {
 }
 
 .tutorial-step {
-  background: #252526;
+  background: #0d1117;
   padding: 1rem;
   margin: 0.5rem 0;
   border-radius: 5px;
@@ -356,18 +362,19 @@ iframe {
 }
 
 .tutorial-step p {
-  color: #cccccc;
+  color: #8b949e;
   line-height: 1.6;
 }
 
 .project-item {
-  background: #252526;
+  background: #0d1117;
   padding: 1rem;
   margin: 0.5rem 0;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border: 1px solid #30363d;
 }
 
 .project-actions {
