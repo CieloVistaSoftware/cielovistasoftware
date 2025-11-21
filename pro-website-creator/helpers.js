@@ -11,6 +11,12 @@ export function openModal(id) {
     modal.classList.add('active');
   }
   if (id === 'projects') {
+    // Pre-fill project name input with current project name
+    const currentName = document.getElementById('projectName').textContent;
+    const nameInput = document.getElementById('projectNameInput');
+    if (nameInput) {
+      nameInput.value = currentName;
+    }
     updateProjectsList();
   }
   if (id === 'emoji') {
@@ -29,29 +35,70 @@ export function closeModal(id) {
 export function switchView(view) {
   const editorSection = document.getElementById('editorSection');
   const previewSection = document.getElementById('previewSection');
+  const splitView = document.getElementById('splitView');
   const viewBtns = document.querySelectorAll('.view-btn');
 
-  viewBtns.forEach(btn => btn.classList.remove('active'));
+  viewBtns.forEach(btn => {
+    btn.classList.remove('active');
+    btn.classList.remove('edit-mode');
+  });
 
   if (view === 'editor') {
     editorSection.classList.remove('hidden');
     previewSection.classList.remove('active');
-    // Set Edit button active
+    splitView.classList.remove('active');
     viewBtns.forEach(btn => {
       if (btn.textContent.includes('Edit')) {
         btn.classList.add('active');
+        btn.classList.add('edit-mode');
       }
     });
-  } else {
+    // Disable edit mode in preview
+    import('./preview.js').then(module => {
+      module.setEditMode(false);
+    });
+    // Disable split edit mode
+    import('./split.js').then(module => {
+      module.setSplitCodeEditMode(false);
+    });
+  } else if (view === 'preview') {
     editorSection.classList.add('hidden');
     previewSection.classList.add('active');
-    // Set Preview button active
+    splitView.classList.remove('active');
     viewBtns.forEach(btn => {
       if (btn.textContent.includes('Preview')) {
         btn.classList.add('active');
       }
     });
-    updatePreview();
+    // Enable edit mode in preview
+    import('./preview.js').then(module => {
+      module.setEditMode(true);
+      module.updatePreview();
+    });
+    // Disable split edit mode
+    import('./split.js').then(module => {
+      module.setSplitCodeEditMode(false);
+    });
+  } else if (view === 'split') {
+    editorSection.classList.add('hidden');
+    previewSection.classList.remove('active');
+    splitView.classList.add('active');
+    viewBtns.forEach(btn => {
+      if (btn.textContent.includes('Split')) {
+        btn.classList.add('active');
+      }
+    });
+    // Enable edit mode in split view preview
+    import('./preview.js').then(module => {
+      module.setEditMode(false);
+    });
+    // Enable split code edit mode
+    import('./split.js').then(module => {
+      module.updateSplitView();
+      module.setupSplitSync();
+      module.enableSplitEditMode();
+      module.setSplitCodeEditMode(true);
+    });
   }
 }
 
@@ -89,25 +136,85 @@ export function insertElement(type) {
   updatePreview();
 }
 
-// Code formatting
+// Code formatting with Prettier
 export function formatCode() {
   const elements = getElements();
   const { currentTab } = state;
   const editor = currentTab === 'html' ? elements.htmlEditor : 
                  currentTab === 'css' ? elements.cssEditor : elements.jsEditor;
   
-  let formatted = editor.value;
-  
-  // Basic formatting
-  formatted = formatted.replace(/>\s*</g, '>\n<');
-  formatted = formatted.replace(/{\s*/g, ' {\n  ');
-  formatted = formatted.replace(/;\s*/g, ';\n  ');
-  formatted = formatted.replace(/}\s*/g, '\n}\n');
-  
-  editor.value = formatted;
-  addToHistory(currentTab);
-  updatePreview();
-  alert('✨ Code formatted!');
+  try {
+    let formatted;
+    const code = editor.value;
+    
+    // Check if Prettier is loaded
+    if (typeof prettier === 'undefined') {
+      // Fallback to basic formatting
+      formatted = code.replace(/>\s*</g, '>\n<');
+      formatted = formatted.replace(/{\s*/g, ' {\n  ');
+      formatted = formatted.replace(/;\s*/g, ';\n  ');
+      formatted = formatted.replace(/}\s*/g, '\n}\n');
+    } else {
+      // Use Prettier for professional formatting
+      if (currentTab === 'html') {
+        formatted = prettier.format(code, {
+          parser: 'html',
+          plugins: prettierPlugins,
+          printWidth: 80,
+          tabWidth: 2,
+          useTabs: false,
+          semi: true,
+          singleQuote: false,
+          htmlWhitespaceSensitivity: 'css'
+        });
+      } else if (currentTab === 'css') {
+        formatted = prettier.format(code, {
+          parser: 'css',
+          plugins: prettierPlugins,
+          printWidth: 120,
+          tabWidth: 2,
+          useTabs: false,
+          singleQuote: false
+        });
+      } else if (currentTab === 'js') {
+        formatted = prettier.format(code, {
+          parser: 'babel',
+          plugins: prettierPlugins,
+          printWidth: 80,
+          tabWidth: 2,
+          useTabs: false,
+          semi: true,
+          singleQuote: true,
+          trailingComma: 'es5',
+          arrowParens: 'avoid'
+        });
+      }
+    }
+    
+    editor.value = formatted;
+    addToHistory(currentTab);
+    updatePreview();
+    
+    // Update line numbers after formatting
+    if (currentTab === 'html') {
+      import('./tabs.js').then(m => m.updateLineNumbers(elements.htmlEditor, 'lineNumbersHtml'));
+    } else if (currentTab === 'css') {
+      import('./tabs.js').then(m => m.updateLineNumbers(elements.cssEditor, 'lineNumbersCss'));
+    } else {
+      import('./tabs.js').then(m => m.updateLineNumbers(elements.jsEditor, 'lineNumbersJs'));
+    }
+    
+    const statusEl = document.getElementById('autoSaveStatus');
+    if (statusEl) {
+      statusEl.textContent = '✨ Formatted!';
+      setTimeout(() => {
+        statusEl.textContent = '✅ Auto-saved';
+      }, 2000);
+    }
+  } catch (err) {
+    alert('❌ Formatting error: ' + err.message);
+    console.error('Format error:', err);
+  }
 }
 
 // Templates
@@ -224,7 +331,10 @@ export function setupProjectNameEditing() {
 export function saveProject() {
   const elements = getElements();
   const nameInput = document.getElementById('projectNameInput');
-  const name = nameInput.value || 'Untitled';
+  const currentProjectName = document.getElementById('projectName').textContent;
+  
+  // Use current project name if input is empty
+  const name = nameInput.value || currentProjectName || 'Untitled';
   const projects = JSON.parse(localStorage.getItem('projects') || '[]');
   
   const project = {
@@ -371,4 +481,64 @@ ${elements.jsEditor.value}
   a.click();
   URL.revokeObjectURL(url);
   alert('✅ Website downloaded!');
+}
+
+// External file loading
+let externalCSS = [];
+let externalJS = [];
+
+export function loadExternalCSS(files) {
+  const fileArray = Array.from(files);
+  const promises = fileArray.map(file => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve({ name: file.name, content: e.target.result });
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  });
+  
+  Promise.all(promises).then(results => {
+    externalCSS = results;
+    document.getElementById('cssFileCount').textContent = results.length;
+    import('./preview.js').then(module => {
+      module.setExternalFiles(externalCSS, externalJS);
+      module.updatePreview();
+    });
+    alert(`✅ Loaded ${results.length} CSS file(s)`);
+  }).catch(err => {
+    alert('❌ Error loading CSS files: ' + err.message);
+  });
+}
+
+export function loadExternalJS(files) {
+  const fileArray = Array.from(files);
+  const promises = fileArray.map(file => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve({ name: file.name, content: e.target.result });
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  });
+  
+  Promise.all(promises).then(results => {
+    externalJS = results;
+    document.getElementById('jsFileCount').textContent = results.length;
+    import('./preview.js').then(module => {
+      module.setExternalFiles(externalCSS, externalJS);
+      module.updatePreview();
+    });
+    alert(`✅ Loaded ${results.length} JS file(s)`);
+  }).catch(err => {
+    alert('❌ Error loading JS files: ' + err.message);
+  });
+}
+
+export function getExternalCSS() {
+  return externalCSS;
+}
+
+export function getExternalJS() {
+  return externalJS;
 }

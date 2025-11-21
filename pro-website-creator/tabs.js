@@ -12,6 +12,12 @@ export function switchTab(tab) {
     }
   });
 
+  // Show/hide context-aware UI elements
+  updateContextUI(tab);
+  
+  // Ensure Edit button is active when switching tabs (we're in edit mode)
+  ensureEditModeActive();
+
   // Hide all editor wrappers
   const htmlWrapper = document.getElementById('htmlWrapper');
   const cssWrapper = document.getElementById('cssWrapper');
@@ -22,6 +28,9 @@ export function switchTab(tab) {
   if (jsWrapper) jsWrapper.style.display = 'none';
 
   const elements = getElements();
+  
+  // Format code before switching
+  formatCurrentTab(tab, elements);
   
   // Show the selected wrapper
   if (tab === 'html' && htmlWrapper) {
@@ -45,6 +54,106 @@ export function switchTab(tab) {
   }
 }
 
+function formatCurrentTab(tab, elements) {
+  let editor, code;
+  
+  if (tab === 'html') {
+    editor = elements.htmlEditor;
+    code = editor.value.trim();
+    if (!code) return;
+    
+    if (typeof prettier !== 'undefined') {
+      try {
+        editor.value = prettier.format(code, {
+          parser: 'html',
+          plugins: prettierPlugins,
+          printWidth: 80,
+          tabWidth: 2,
+          useTabs: false,
+          htmlWhitespaceSensitivity: 'css'
+        });
+      } catch (e) {
+        // Silent fail - keep original code
+      }
+    }
+  } else if (tab === 'css') {
+    editor = elements.cssEditor;
+    code = editor.value.trim();
+    if (!code) return;
+    
+    if (typeof prettier !== 'undefined') {
+      try {
+        editor.value = prettier.format(code, {
+          parser: 'css',
+          plugins: prettierPlugins,
+          printWidth: 120,
+          tabWidth: 2,
+          useTabs: false,
+          singleQuote: false
+        });
+      } catch (e) {
+        // Silent fail - keep original code
+      }
+    }
+  } else if (tab === 'js') {
+    editor = elements.jsEditor;
+    code = editor.value.trim();
+    if (!code) return;
+    
+    if (typeof prettier !== 'undefined') {
+      try {
+        editor.value = prettier.format(code, {
+          parser: 'babel',
+          plugins: prettierPlugins,
+          printWidth: 80,
+          tabWidth: 2,
+          useTabs: false,
+          semi: true,
+          singleQuote: true
+        });
+      } catch (e) {
+        // Silent fail - keep original code
+      }
+    }
+  }
+}
+
+function ensureEditModeActive() {
+  // Only activate edit button if we're not in preview or split view
+  const editorSection = document.getElementById('editorSection');
+  const previewSection = document.getElementById('previewSection');
+  const splitView = document.getElementById('splitView');
+  
+  const isPreviewActive = previewSection && previewSection.classList.contains('active');
+  const isSplitActive = splitView && splitView.classList.contains('active');
+  
+  if (!isPreviewActive && !isSplitActive) {
+    const viewBtns = document.querySelectorAll('.view-btn');
+    viewBtns.forEach(btn => {
+      btn.classList.remove('active');
+      btn.classList.remove('edit-mode');
+      if (btn.textContent.includes('Edit')) {
+        btn.classList.add('active');
+        btn.classList.add('edit-mode');
+      }
+    });
+  }
+}
+
+function updateContextUI(tab) {
+  // Show/hide HTML toolbar based on active tab
+  const htmlToolbar = document.getElementById('htmlToolbar');
+  if (htmlToolbar) {
+    htmlToolbar.style.display = tab === 'html' ? 'flex' : 'none';
+  }
+
+  // Show/hide snippets button based on tab
+  const snippetsBtn = document.getElementById('snippetsBtn');
+  if (snippetsBtn) {
+    snippetsBtn.style.display = tab === 'html' ? 'inline-block' : 'none';
+  }
+}
+
 export function updateLineNumbers(editor, numbersId) {
   const lineNumbersEl = document.getElementById(numbersId);
   if (!lineNumbersEl || !editor) return;
@@ -61,27 +170,20 @@ export function updateLineNumbers(editor, numbersId) {
   }
 }
 
-function selectLine(editor, lineIndex, lineNumElement, numbersId) {
+export function selectLine(editor, lineIndex, lineNumElement, numbersId) {
+  // Update current line in state
+  if (numbersId === 'lineNumbersHtml') {
+    state.currentLine.html = lineIndex;
+  } else if (numbersId === 'lineNumbersCss') {
+    state.currentLine.css = lineIndex;
+  } else if (numbersId === 'lineNumbersJs') {
+    state.currentLine.js = lineIndex;
+  }
+  
   // Remove previous active states
   const allLineNums = document.querySelectorAll(`#${numbersId} .line-number`);
   allLineNums.forEach(ln => ln.classList.remove('active'));
   
-  // Add active to clicked line number
-  lineNumElement.classList.add('active');
-  
-  // Calculate line position in textarea
-  const lines = editor.value.split('\n');
-  let startPos = 0;
-  for (let i = 0; i < lineIndex; i++) {
-    startPos += lines[i].length + 1; // +1 for newline
-  }
-  const endPos = startPos + lines[lineIndex].length;
-  
-  // Select the line in the textarea
-  editor.focus();
-  editor.setSelectionRange(startPos, endPos);
-  
-  // Scroll to the line
-  const lineHeight = parseFloat(getComputedStyle(editor).lineHeight);
-  editor.scrollTop = lineIndex * lineHeight - editor.clientHeight / 2;
+  // Add active to clicked line number and highlight the line
+  selectLine(editor, numbersId, lineIndex, true);
 }

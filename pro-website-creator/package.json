@@ -1,0 +1,18 @@
+{
+  "name": "pro-website-creator",
+  "version": "1.0.0",
+  "description": "Professional Website Creator with DevTools Integration",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "serve": "http-server -p 5500 -c-1",
+    "test:with-server": "start-server-and-test serve http://127.0.0.1:5500 test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "http-server": "^14.1.1",
+    "start-server-and-test": "^2.0.12"
+  }
+}

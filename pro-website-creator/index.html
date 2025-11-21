@@ -11,15 +11,17 @@
     <h1>🚀 Pro Website Creator</h1>
     
     <div class="button-row">
-      <button class="btn-purple" onclick="openModal('templates')">📚 Templates</button>
-      <button class="btn-primary" onclick="openModal('snippets')">⚡ Snippets</button>
-      <button class="btn-success" onclick="openModal('projects')">💾 Projects</button>
-      <button class="btn-orange" onclick="openModal('tutorial')">📖 Tutorial</button>
-      <button class="btn-primary" onclick="undo()">↶ Undo</button>
-      <button class="btn-primary" onclick="redo()">↷ Redo</button>
-      <button class="view-btn" onclick="switchView('editor')">✏️ Edit</button>
-      <button class="view-btn" onclick="switchView('preview')">👁️ Preview</button>
-      <button class="btn-purple" onclick="downloadWebsite()">⬇️ Download</button>
+      <button class="btn-purple" onclick="openModal('templates')" title="Browse and load pre-built templates">📚 Templates</button>
+      <button class="btn-primary" id="snippetsBtn" onclick="openModal('snippets')" style="display: none;" title="Insert common HTML snippets">⚡ Snippets</button>
+      <button class="btn-success" onclick="openModal('projects')" title="Save, load, and manage your projects">💾 Projects</button>
+      <button class="btn-orange" onclick="openModal('tutorial')" title="Learn how to use the website creator">📖 Tutorial</button>
+      <button class="btn-primary" onclick="openModal('settings')" title="Configure editor settings and view specifications">⚙️ Settings</button>
+      <button class="btn-primary" onclick="undo()" title="Undo last change (Ctrl+Z)">↶ Undo</button>
+      <button class="btn-primary" onclick="redo()" title="Redo last undone change (Ctrl+Y)">↷ Redo</button>
+      <button class="view-btn" onclick="switchView('editor')" title="Show editor only">✏️ Edit</button>
+      <button class="view-btn" onclick="switchView('preview')" title="Show preview only">👁️ Preview</button>
+      <button class="view-btn" onclick="switchView('split')" title="Show editor and preview side-by-side">⬌ Split</button>
+      <button class="btn-purple" onclick="downloadWebsite()" title="Download website as ZIP file">⬇️ Download</button>
     </div>
   </div>
 
@@ -29,21 +31,21 @@
   </div>
 
   <div class="editor-section" id="editorSection">
-    <div class="editor-toolbar">
-      <button class="tool-btn" onclick="insertElement('h1')">H1</button>
-      <button class="tool-btn" onclick="insertElement('h2')">H2</button>
-      <button class="tool-btn" onclick="insertElement('p')">P</button>
-      <button class="tool-btn" onclick="insertElement('button')">Button</button>
-      <button class="tool-btn" onclick="insertElement('img')">🖼️ Image</button>
-      <button class="tool-btn" onclick="insertElement('link')">🔗 Link</button>
-      <button class="tool-btn" onclick="openModal('emoji')">😊 Emoji</button>
-      <button class="tool-btn" onclick="formatCode()">✨ Format</button>
+    <div class="editor-toolbar" id="htmlToolbar">
+      <button class="tool-btn" onclick="insertElement('h1')" title="Insert H1 heading element">H1</button>
+      <button class="tool-btn" onclick="insertElement('h2')" title="Insert H2 heading element">H2</button>
+      <button class="tool-btn" onclick="insertElement('p')" title="Insert paragraph element">P</button>
+      <button class="tool-btn" onclick="insertElement('button')" title="Insert button element">Button</button>
+      <button class="tool-btn" onclick="insertElement('img')" title="Insert image element">🖼️ Image</button>
+      <button class="tool-btn" onclick="insertElement('link')" title="Insert link (anchor) element">🔗 Link</button>
+      <button class="tool-btn" onclick="openModal('emoji')" title="Pick and insert an emoji">😊 Emoji</button>
+      <button class="tool-btn" onclick="formatCode()" title="Auto-format and indent HTML code">✨ Format</button>
     </div>
 
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('html')">HTML</button>
-      <button class="tab" onclick="switchTab('css')">CSS</button>
-      <button class="tab" onclick="switchTab('js')">JS</button>
+      <button class="tab active" onclick="switchTab('html')" title="Switch to HTML editor">HTML</button>
+      <button class="tab" onclick="switchTab('css')" title="Switch to CSS editor">CSS</button>
+      <button class="tab" onclick="switchTab('js')" title="Switch to JavaScript editor">JS</button>
     </div>
 
     <div class="editor-wrapper" id="htmlWrapper">
@@ -61,76 +63,169 @@
   </div>
 
   <div class="preview-section" id="previewSection">
+    <div class="preview-toolbar" id="previewToolbar">
+      <label class="file-selector-label">
+        <span>📄 CSS Files:</span>
+        <input type="file" id="cssFileSelector" accept=".css" multiple onchange="loadExternalCSS(this.files)">
+        <span class="file-count" id="cssFileCount">0</span>
+      </label>
+      <label class="file-selector-label">
+        <span>📜 JS Files:</span>
+        <input type="file" id="jsFileSelector" accept=".js" multiple onchange="loadExternalJS(this.files)">
+        <span class="file-count" id="jsFileCount">0</span>
+      </label>
+      <label class="theme-selector-label">
+        <span>🎨 Theme:</span>
+        <select id="themeSelector" onchange="applyPreviewTheme(this.value)">
+          <option value="none">No Theme</option>
+          <optgroup label="🟢 Green Themes">
+            <option value="github-dark" data-color="#7ee787">● GitHub Dark</option>
+            <option value="forest" data-color="#66bb6a">● Forest</option>
+            <option value="forest-night" data-color="#52b788">● Forest Night</option>
+            <option value="aurora" data-color="#06ffa5">● Aurora</option>
+          </optgroup>
+          <optgroup label="🔵 Blue Themes">
+            <option value="github-light" data-color="#0969da">● GitHub Light</option>
+            <option value="corporate" data-color="#3498db">● Corporate</option>
+            <option value="ocean" data-color="#0074d9">● Ocean</option>
+            <option value="slate" data-color="#38bdf8">● Slate</option>
+            <option value="navy" data-color="#3ea6ff">● Navy</option>
+            <option value="nord" data-color="#88c0d0">● Nord</option>
+            <option value="cotton-candy" data-color="#8ec5fc">● Cotton Candy</option>
+          </optgroup>
+          <optgroup label="🟣 Purple/Pink Themes">
+            <option value="dracula" data-color="#bd93f9">● Dracula</option>
+            <option value="synthwave" data-color="#ff7edb">● Synthwave '84</option>
+            <option value="synthwave-neon" data-color="#ff2e97">● Synthwave Neon</option>
+            <option value="cyberpunk" data-color="#ff00ff">● Cyberpunk</option>
+            <option value="galaxy" data-color="#9d4edd">● Galaxy</option>
+            <option value="tokyo-night" data-color="#bb9af7">● Tokyo Night</option>
+            <option value="bubblegum" data-color="#ff69b4">● Bubblegum</option>
+            <option value="vaporwave" data-color="#ff71ce">● Vaporwave</option>
+            <option value="candy" data-color="#ff69b4">● Candy</option>
+            <option value="catppuccin-latte" data-color="#d20f39">● Catppuccin Latte</option>
+          </optgroup>
+          <optgroup label="🔴 Red/Orange Themes">
+            <option value="outrun" data-color="#fc1f7e">● Outrun</option>
+            <option value="miami-nights" data-color="#ff6ac1">● Miami Nights</option>
+            <option value="sunset" data-color="#ff6b6b">● Sunset</option>
+            <option value="lava" data-color="#ff4500">● Lava</option>
+            <option value="burgundy" data-color="#e57373">● Burgundy</option>
+            <option value="desert" data-color="#d4a574">● Desert</option>
+          </optgroup>
+          <optgroup label="🟡 Yellow/Cyan Themes">
+            <option value="monokai" data-color="#a6e22e">● Monokai</option>
+            <option value="one-dark" data-color="#98c379">● One Dark</option>
+            <option value="material-dark" data-color="#c3e88d">● Material Dark</option>
+          </optgroup>
+          <optgroup label="⚪ Light Themes">
+            <option value="solarized-light" data-color="#268bd2">● Solarized Light</option>
+            <option value="gruvbox-light" data-color="#076678">● Gruvbox Light</option>
+            <option value="material-light" data-color="#0277bd">● Material Light</option>
+            <option value="one-light" data-color="#4078f2">● One Light</option>
+          </optgroup>
+          <optgroup label="⚫ Dark Themes">
+            <option value="gruvbox-dark" data-color="#fb4934">● Gruvbox Dark</option>
+          </optgroup>
+          <optgroup label="▫ Minimal Themes">
+            <option value="monochrome" data-color="#888888">● Monochrome</option>
+            <option value="minimal-dark" data-color="#808080">● Minimal Dark</option>
+            <option value="minimal-light" data-color="#666666">● Minimal Light</option>
+            <option value="zen" data-color="#7a7a7a">● Zen</option>
+            <option value="paper" data-color="#5e5e5e">● Paper</option>
+          </optgroup>
+            <option value="paper" data-color="#5e5e5e">● Paper</option>
+          </optgroup>
+        </select>
+      </label>
+    </div>
     <iframe id="preview"></iframe>
+  </div>
+
+  <div class="split-view" id="splitView">
+    <div class="split-editor">
+      <div class="split-tabs">
+        <button class="split-tab active" onclick="switchSplitTab('html')" title="View HTML code in split mode">HTML</button>
+        <button class="split-tab" onclick="switchSplitTab('css')" title="View CSS code in split mode">CSS</button>
+        <button class="split-tab" onclick="switchSplitTab('js')" title="View JavaScript code in split mode">JS</button>
+      </div>
+      <div class="split-editor-wrapper" id="splitHtmlWrapper">
+        <div class="line-numbers" id="splitLineNumbersHtml">1</div>
+        <textarea id="splitHtmlEditor" readonly></textarea>
+      </div>
+      <div class="split-editor-wrapper" id="splitCssWrapper" style="display: none;">
+        <div class="line-numbers" id="splitLineNumbersCss">1</div>
+        <textarea id="splitCssEditor" readonly style="display: none;"></textarea>
+      </div>
+      <div class="split-editor-wrapper" id="splitJsWrapper" style="display: none;">
+        <div class="line-numbers" id="splitLineNumbersJs">1</div>
+        <textarea id="splitJsEditor" readonly style="display: none;"></textarea>
+      </div>
+    </div>
+    <div class="split-preview">
+      <iframe id="splitPreviewFrame"></iframe>
+    </div>
   </div>
 
   <!-- Templates Modal -->
   <div class="modal" id="templatesModal">
-    <div class="modal-content">
+    <div class="modal-content compact">
       <div class="modal-header">
         <h2>📚 Templates</h2>
-        <button class="close-btn" onclick="closeModal('templates')">✕</button>
+        <button class="close-btn" onclick="closeModal('templates')" title="Close modal">✕</button>
       </div>
-      <div class="template-grid">
-        <div class="template-card" onclick="loadTemplate('basic')">
-          <h3>🌟 Basic</h3>
-          <p>Simple starter template</p>
-        </div>
-        <div class="template-card" onclick="loadTemplate('portfolio')">
-          <h3>💼 Portfolio</h3>
-          <p>Showcase your work</p>
-        </div>
-        <div class="template-card" onclick="loadTemplate('landing')">
-          <h3>🚀 Landing Page</h3>
-          <p>Product landing page</p>
-        </div>
-        <div class="template-card" onclick="loadTemplate('blog')">
-          <h3>📝 Blog</h3>
-          <p>Article-focused layout</p>
-        </div>
+      <div class="compact-grid" id="templatesGrid">
+        <button class="compact-card" id="templateBasic" onclick="loadTemplate('basic')" title="Load a simple starter template">🌟 Basic</button>
+        <button class="compact-card" id="templatePortfolio" onclick="loadTemplate('portfolio')" title="Load a professional portfolio template">💼 Portfolio</button>
+        <button class="compact-card" id="templateLanding" onclick="loadTemplate('landing')" title="Load a modern landing page template">🚀 Landing</button>
+        <button class="compact-card" id="templateBlog" onclick="loadTemplate('blog')" title="Load a blog layout template">📝 Blog</button>
       </div>
     </div>
   </div>
 
   <!-- Snippets Modal -->
   <div class="modal" id="snippetsModal">
-    <div class="modal-content">
+    <div class="modal-content compact">
       <div class="modal-header">
         <h2>⚡ Code Snippets</h2>
-        <button class="close-btn" onclick="closeModal('snippets')">✕</button>
+        <button class="close-btn" id="snippetsCloseBtn" onclick="closeModal('snippets')" title="Close modal">✕</button>
       </div>
-      <button class="snippet-btn" onclick="insertSnippet('navbar')">Navigation Bar</button>
-      <button class="snippet-btn" onclick="insertSnippet('hero')">Hero Section</button>
-      <button class="snippet-btn" onclick="insertSnippet('footer')">Footer</button>
-      <button class="snippet-btn" onclick="insertSnippet('form')">Contact Form</button>
-      <button class="snippet-btn" onclick="insertSnippet('card')">Card Component</button>
+      <div class="compact-grid" id="snippetsGrid" style="grid-template-columns: 1fr 1fr;">
+        <button class="compact-card" id="snippetNavbar" onclick="insertSnippet('navbar')" title="Insert navigation bar HTML">🧭 Navigation Bar</button>
+        <button class="compact-card" id="snippetHero" onclick="insertSnippet('hero')" title="Insert hero section HTML">🌟 Hero Section</button>
+        <button class="compact-card" id="snippetFooter" onclick="insertSnippet('footer')" title="Insert footer HTML">👣 Footer</button>
+        <button class="compact-card" id="snippetForm" onclick="insertSnippet('form')" title="Insert contact form HTML">📝 Contact Form</button>
+        <button class="compact-card" id="snippetCard" onclick="insertSnippet('card')" title="Insert card component HTML">🎴 Card Component</button>
+      </div>
     </div>
   </div>
 
   <!-- Projects Modal -->
   <div class="modal" id="projectsModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>💾 My Projects</h2>
-        <button class="close-btn" onclick="closeModal('projects')">✕</button>
+    <div class="modal-content compact">
+      <div class="modal-header" id="projectsHeader">
+        <h2>💾 Projects</h2>
+        <button class="close-btn" id="projectsCloseBtn" onclick="closeModal('projects')" title="Close modal">✕</button>
       </div>
-      <input type="text" id="projectNameInput" placeholder="Project Name" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 4px;">
-      <button class="btn-success" style="width: 100%; margin: 0.5rem 0;" onclick="saveProject()">💾 Save Current Project</button>
-      <button class="btn-primary" style="width: 100%; margin: 0.5rem 0;" onclick="exportProject()">📤 Export Project</button>
-      <button class="btn-orange" style="width: 100%; margin: 0.5rem 0;" onclick="document.getElementById('importFile').click()">📥 Import Project</button>
+      <input type="text" id="projectNameInput" placeholder="Project Name" class="compact-input">
+      <div class="compact-grid" id="projectActionsGrid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <button class="compact-card" id="projectSaveBtn" onclick="saveProject()" title="Save current project to browser storage">💾 Save</button>
+        <button class="compact-card" id="projectExportBtn" onclick="exportProject()" title="Export project as JSON file">📤 Export</button>
+        <button class="compact-card" id="projectImportBtn" onclick="document.getElementById('importFile').click()" title="Import project from JSON file">📥 Import</button>
+      </div>
       <input type="file" id="importFile" style="display: none;" onchange="importProject(event)" accept=".json">
       
-      <h3 style="margin: 1rem 0;">Saved Projects</h3>
+      <h3 id="savedProjectsHeading" style="margin: 0.8rem 0 0.5rem; font-size: 0.9rem; opacity: 0.7;">Saved Projects</h3>
       <div id="projectsList"></div>
     </div>
   </div>
 
   <!-- Emoji Modal -->
   <div class="modal" id="emojiModal">
-    <div class="modal-content">
-      <div class="modal-header">
+    <div class="modal-content compact">
+      <div class="modal-header" id="emojiHeader">
         <h2>😊 Emoji Picker</h2>
-        <button class="close-btn" onclick="closeModal('emoji')">✕</button>
+        <button class="close-btn" id="emojiCloseBtn" onclick="closeModal('emoji')" title="Close modal">✕</button>
       </div>
       <div class="emoji-grid" id="emojiGrid"></div>
     </div>
@@ -138,28 +233,28 @@
 
   <!-- Tutorial Modal -->
   <div class="modal" id="tutorialModal">
-    <div class="modal-content">
-      <div class="modal-header">
+    <div class="modal-content fullscreen">
+      <div class="modal-header" id="tutorialHeader">
         <h2>📖 Tutorial</h2>
-        <button class="close-btn" onclick="closeModal('tutorial')">✕</button>
+        <button class="close-btn" id="tutorialCloseBtn" onclick="closeModal('tutorial')" title="Close modal">✕</button>
       </div>
       
-      <div class="tutorial-step">
+      <div class="tutorial-step" id="tutorialStep1">
         <h3>1️⃣ Getting Started</h3>
         <p>Use the tabs to switch between HTML, CSS, and JavaScript. Edit your code in the editor and click Preview to see changes!</p>
       </div>
 
-      <div class="tutorial-step">
+      <div class="tutorial-step" id="tutorialStep2">
         <h3>2️⃣ Using Templates</h3>
         <p>Click Templates button to load pre-made designs. Choose from Portfolio, Blog, and more!</p>
       </div>
 
-      <div class="tutorial-step">
+      <div class="tutorial-step" id="tutorialStep3">
         <h3>3️⃣ Quick Elements</h3>
         <p>Use the toolbar buttons (H1, H2, P, Button) to quickly insert HTML elements.</p>
       </div>
 
-      <div class="tutorial-step">
+      <div class="tutorial-step" id="tutorialStep4">
         <h3>4️⃣ Download</h3>
         <p>When you're done, click Download to get your complete website as a single HTML file!</p>
       </div>
@@ -170,6 +265,220 @@
     Pro Website Creator - All features included!
   </div>
 
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content compact">
+      <div class="modal-header" id="settingsHeader">
+        <h2>⚙️ Configuration</h2>
+        <div class="header-actions">
+          <button class="toggle-fullscreen-btn" id="toggleFullscreenBtn" onclick="toggleConfigFullscreen()" title="Toggle fullscreen mode">⛶</button>
+          <button class="close-btn" id="settingsCloseBtn" onclick="closeModal('settings')" title="Close settings modal">Close</button>
+        </div>
+      </div>
+      
+        <div class="settings-tabs">
+        <button class="settings-tab active" onclick="switchSettingsTab('settings')" title="Configure editor and preview settings">⚙️ Settings</button>
+        <button class="settings-tab" onclick="switchSettingsTab('specs')" title="View all feature specifications">📝 Specifications</button>
+        </div>      <div class="settings-content" id="settingsContent">
+        <div class="settings-grid">
+          <!-- Editor Card -->
+          <div class="settings-card">
+            <h3>📝 Editor</h3>
+            <div class="card-impact">
+              <span class="impact-badge html">HTML</span>
+              <span class="impact-badge css">CSS</span>
+              <span class="impact-badge js">JS</span>
+            </div>
+            <label class="setting-item" title="Font size for all editors (10-24px)">
+              <span>Font Size</span>
+              <input type="number" id="fontSizeSetting" min="10" max="24" value="14" onchange="applySettings()" title="Controls the font size in HTML, CSS, and JS editors">
+            </label>
+            <label class="setting-item" title="Number of spaces per tab indentation (2-8)">
+              <span>Tab Size</span>
+              <input type="number" id="tabSizeSetting" min="2" max="8" value="2" onchange="applySettings()" title="Controls indentation width in all editors">
+            </label>
+            <label class="setting-item" title="Enable line wrapping for CSS and JavaScript editors">
+              <span>Word Wrap (CSS/JS)</span>
+              <input type="checkbox" id="lineWrapSetting" onchange="applySettings()" title="When enabled, long lines wrap to next line instead of horizontal scrolling">
+            </label>
+            <label class="setting-item" title="Enable line wrapping specifically for HTML editor">
+              <span>HTML Word Wrap</span>
+              <input type="checkbox" id="htmlWordWrapSetting" onchange="applySettings()" title="When enabled, HTML code wraps to fit editor width">
+            </label>
+            <label class="setting-item" title="Color of text in all code editors">
+              <span>Text Color</span>
+              <input type="color" id="editorTextColor" value="#ffeb3b" onchange="applySettings()" title="Customize the color of code text (default: yellow #ffeb3b)">
+            </label>
+          </div>
+
+          <!-- Auto-Save Card -->
+          <div class="settings-card">
+            <h3>💾 Auto-Save</h3>
+            <div class="card-impact">
+              <span class="impact-badge html">HTML</span>
+              <span class="impact-badge css">CSS</span>
+              <span class="impact-badge js">JS</span>
+            </div>
+            <label class="setting-item" title="How often to automatically save your work (1-60 seconds)">
+              <span>Interval (sec)</span>
+              <input type="number" id="autoSaveInterval" min="1" max="60" value="5" onchange="applySettings()" title="Saves your code every N seconds to prevent data loss">
+            </label>
+            <label class="setting-item" title="Toggle automatic saving on/off">
+              <span>Enable Auto-Save</span>
+              <input type="checkbox" id="autoSaveEnabled" checked onchange="applySettings()" title="When enabled, your work saves automatically at the specified interval">
+            </label>
+          </div>
+
+          <!-- Theme Card -->
+          <div class="settings-card">
+            <h3>🎨 Theme</h3>
+            <div class="card-impact">
+              <span class="impact-badge ui">UI Only</span>
+            </div>
+            <label class="setting-item" title="Choose the accent color for UI highlights">
+              <span>Accent Color</span>
+              <select id="accentColorSetting" onchange="applySettings()" title="Changes the color of active elements, highlights, and accents throughout the UI">
+                <option value="#7ee787" selected>Green</option>
+                <option value="#58a6ff">Blue</option>
+                <option value="#f778ba">Pink</option>
+                <option value="#ffa657">Orange</option>
+                <option value="#a371f7">Purple</option>
+              </select>
+            </label>
+            <label class="setting-item" title="Brightness of the active line highlight (10-80%)">
+              <span>Line Brightness</span>
+              <input type="range" id="lineHighlightBrightness" min="10" max="80" value="30" step="10" oninput="applySettings()" title="Controls how bright the current line highlighting appears in editors">
+              <span id="brightnessValue">30%</span>
+            </label>
+            <label class="setting-item" title="Use dark styling for all toolbar buttons">
+              <span>Dark Mode Buttons</span>
+              <input type="checkbox" id="darkModeButtons" checked onchange="applySettings()" title="When enabled, all buttons use dark background with colored borders">
+            </label>
+          </div>
+
+          <!-- Preview Card -->
+          <div class="settings-card">
+            <h3>👁️ Preview</h3>
+            <div class="card-impact">
+              <span class="impact-badge html">HTML</span>
+              <span class="impact-badge css">CSS</span>
+              <span class="impact-badge js">JS</span>
+            </div>
+            <label class="setting-item" title="Automatically update preview as you type">
+              <span>Live Preview</span>
+              <input type="checkbox" id="livePreview" checked onchange="applySettings()" title="When enabled, preview updates in real-time as you edit code">
+            </label>
+            <label class="setting-item" title="Highlight elements when hovering in preview">
+              <span>Element Highlight</span>
+              <input type="checkbox" id="elementHighlight" checked onchange="applySettings()" title="When enabled, elements show visual outlines on hover in preview mode">
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-actions" id="settingsActions">
+          <button class="compact-card reset-btn" id="resetSettingsBtn" onclick="resetSettings()" title="Reset all settings to default values">↻ Reset to Defaults</button>
+        </div>
+      </div>
+      
+      <div class="specs-content" id="specsContent" style="display: none;">
+        <div class="specs-viewer">
+          <div class="specs-header">
+            <h3>📖 All Specifications</h3>
+            <div class="specs-controls">
+              <label>
+                <span>Category:</span>
+                <select id="specCategoryFilter" onchange="filterSpecs()">
+                  <option value="all">All Categories</option>
+                  <option value="editor">Editor</option>
+                  <option value="ui">UI/UX</option>
+                  <option value="preview">Preview</option>
+                  <option value="storage">Storage</option>
+                  <option value="formatting">Formatting</option>
+                  <option value="theme">Theme</option>
+                  <option value="modal">Modal</option>
+                </select>
+              </label>
+              <label>
+                <span>Sort:</span>
+                <select id="specSortOrder" onchange="sortSpecs()">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="category">By Category</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          
+          <div id="specsList" class="specs-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Configuration Modal -->
+  <div class="modal" id="tabConfigModal">
+    <div class="modal-content compact">
+      <div class="modal-header">
+        <h2>⚙️ Tab Configuration</h2>
+        <button class="modal-close" onclick="closeModal('tabConfig')" title="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="tabConfigTarget" value="">
+        
+        <label class="setting-item">
+          <span>Font Size (px)</span>
+          <input type="number" id="tabFontSize" min="10" max="24" value="14" onchange="applyTabConfig()" title="Set font size for this tab's editor">
+        </label>
+        
+        <label class="setting-item">
+          <span>Tab Size (spaces)</span>
+          <input type="number" id="tabTabSize" min="2" max="8" value="2" onchange="applyTabConfig()" title="Set indentation width for this tab">
+        </label>
+        
+        <label class="setting-item">
+          <span id="tabWordWrapLabel">Word Wrap</span>
+          <input type="checkbox" id="tabWordWrap" onchange="applyTabConfig()" title="Enable or disable word wrapping">
+        </label>
+        
+        <label class="setting-item">
+          <span>Text Color</span>
+          <input type="color" id="tabTextColor" value="#ffeb3b" onchange="applyTabConfig()" title="Set text color for this tab's editor">
+        </label>
+        
+        <div class="modal-actions" style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+          <button class="compact-card" onclick="applyTabConfig()" style="flex: 1; background: #238636; border-color: #2ea043;" title="Apply custom settings to this tab">✓ Apply</button>
+          <button class="compact-card reset-btn" onclick="resetTabConfig()" style="flex: 1;" title="Remove custom settings and use global settings">↻ Reset to Global</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Console -->
+  <div class="error-console" id="errorConsole">
+    <div class="error-console-header">
+      <div class="error-console-title">
+        ⚠️ Errors & Warnings
+        <span class="error-count" id="errorCount">0</span>
+      </div>
+      <button class="error-console-close" onclick="toggleErrorConsole()" title="Close error console">✕</button>
+    </div>
+    <div class="error-console-body" id="errorConsoleBody">
+      <div style="color: #8b949e; text-align: center; padding: 2rem;">No errors detected</div>
+    </div>
+  </div>
+
+  <!-- Error Toggle Button -->
+  <button class="error-toggle-btn no-errors" id="errorToggleBtn" onclick="toggleErrorConsole()" title="View Errors">
+    ⚠️
+    <span class="error-badge" id="errorBadge" style="display: none;">0</span>
+  </button>
+
+  <!-- Prettier for code formatting -->
+  <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-html.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-postcss.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
+  
   <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTools Tracker Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #0d1117;
+      color: #c9d1d9;
+    }
+    
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #30363d;
+      border-radius: 5px;
+    }
+    
+    .test-elements {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    
+    .test-elements > * {
+      padding: 10px 15px;
+      background: #161b22;
+      border: 2px solid #30363d;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .test-elements > *:hover {
+      border-color: #7ee787;
+    }
+    
+    .test-elements a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+    
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #161b22;
+      border-radius: 5px;
+      font-family: 'Consolas', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .result-item {
+      padding: 5px;
+      margin: 2px 0;
+      border-left: 3px solid #30363d;
+      padding-left: 10px;
+    }
+    
+    .result-item.pass {
+      border-left-color: #7ee787;
+      background: rgba(126, 231, 135, 0.1);
+    }
+    
+    .result-item.fail {
+      border-left-color: #f85149;
+      background: rgba(248, 81, 73, 0.1);
+    }
+    
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #161b22;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    
+    .summary.pass {
+      border-left: 5px solid #7ee787;
+    }
+    
+    .summary.fail {
+      border-left: 5px solid #f85149;
+    }
+    
+    button {
+      padding: 10px 20px;
+      background: #238636;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 10px 5px;
+    }
+    
+    button:hover {
+      background: #2ea043;
+    }
+    
+    button.reset {
+      background: #da3633;
+    }
+    
+    button.reset:hover {
+      background: #f85149;
+    }
+  </style>
+</head>
+<body>
+  <h1>DevTools Element Tracking Test Suite</h1>
+  
+  <div class="test-section">
+    <h2>Test Elements</h2>
+    <div class="test-elements">
+      <h1 id="test-h1">Test H1</h1>
+      <a href="#home" id="link-home">Home</a>
+      <a href="#about" id="link-about">About</a>
+      <a href="#contact" id="link-contact">Contact</a>
+      <section id="test-section">Section</section>
+      <div id="test-div" class="test-class">Div</div>
+      <p id="test-p">Paragraph</p>
+    </div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Automated Tests</h2>
+    <button onclick="runTests()">Run All Tests</button>
+    <button class="reset" onclick="resetTests()">Reset</button>
+  </div>
+  
+  <div class="results" id="results"></div>
+  <div class="summary" id="summary"></div>
+
+  <script type="module">
+    import { generateDevToolsTracker } from './devtools-tracker.js';
+    
+    // Inject tracker into current page
+    const trackerCode = generateDevToolsTracker();
+    eval(trackerCode);
+    
+    const results = [];
+    let messageQueue = [];
+    
+    // Listen for messages
+    window.addEventListener('message', (e) => {
+      if (e.data.type === 'devtoolsInspect') {
+        messageQueue.push(e.data);
+      }
+    });
+    
+    function log(message, pass = true) {
+      results.push({ message, pass });
+      const resultsDiv = document.getElementById('results');
+      const item = document.createElement('div');
+      item.className = `result-item ${pass ? 'pass' : 'fail'}`;
+      item.textContent = `${pass ? '✓' : '✗'} ${message}`;
+      resultsDiv.appendChild(item);
+    }
+    
+    function clearMessages() {
+      messageQueue = [];
+    }
+    
+    function waitForMessage(timeout = 200) {
+      return new Promise(resolve => setTimeout(() => resolve(messageQueue), timeout));
+    }
+    
+    async function simulateHover(element) {
+      const event = new MouseEvent('mouseover', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      element.dispatchEvent(event);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
+    async function testBasicTracking() {
+      log('TEST: Basic Element Tracking', true);
+      clearMessages();
+      
+      const h1 = document.getElementById('test-h1');
+      await simulateHover(h1);
+      const messages = await waitForMessage();
+      
+      if (messages.length === 0) {
+        log('FAIL: No message sent for h1 hover', false);
+        return false;
+      }
+      
+      const msg = messages[0];
+      if (msg.tagName !== 'h1') {
+        log(`FAIL: Expected tagName 'h1', got '${msg.tagName}'`, false);
+        return false;
+      }
+      
+      log('PASS: H1 element tracked correctly', true);
+      return true;
+    }
+    
+    async function testAnchorTracking() {
+      log('TEST: Anchor Element Tracking', true);
+      clearMessages();
+      
+      const homeLink = document.getElementById('link-home');
+      await simulateHover(homeLink);
+      const messages = await waitForMessage();
+      
+      if (messages.length === 0) {
+        log('FAIL: No message sent for anchor hover', false);
+        return false;
+      }
+      
+      const msg = messages[0];
+      if (msg.tagName !== 'a') {
+        log(`FAIL: Expected tagName 'a', got '${msg.tagName}'`, false);
+        return false;
+      }
+      
+      if (msg.attributes?.href !== '#home') {
+        log(`FAIL: Expected href '#home', got '${msg.attributes?.href}'`, false);
+        return false;
+      }
+      
+      log('PASS: Anchor element with href tracked correctly', true);
+      return true;
+    }
+    
+    async function testSequentialAnchors() {
+      log('TEST: Sequential Anchor Tracking (Home → About → Contact)', true);
+      clearMessages();
+      
+      const homeLink = document.getElementById('link-home');
+      const aboutLink = document.getElementById('link-about');
+      const contactLink = document.getElementById('link-contact');
+      
+      await simulateHover(homeLink);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await simulateHover(aboutLink);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await simulateHover(contactLink);
+      
+      const messages = await waitForMessage();
+      
+      if (messages.length < 3) {
+        log(`FAIL: Expected 3 messages, got ${messages.length}`, false);
+        log(`Messages received: ${messages.map(m => m.attributes?.href).join(', ')}`, false);
+        return false;
+      }
+      
+      const hrefs = messages.map(m => m.attributes?.href);
+      if (hrefs[0] !== '#home' || hrefs[1] !== '#about' || hrefs[2] !== '#contact') {
+        log(`FAIL: Expected ['#home', '#about', '#contact'], got [${hrefs.join(', ')}]`, false);
+        return false;
+      }
+      
+      log('PASS: All three anchors tracked in sequence', true);
+      return true;
+    }
+    
+    async function testDuplicatePrevention() {
+      log('TEST: Duplicate Message Prevention', true);
+      clearMessages();
+      
+      const h1 = document.getElementById('test-h1');
+      
+      // Hover same element multiple times
+      await simulateHover(h1);
+      await simulateHover(h1);
+      await simulateHover(h1);
+      
+      const messages = await waitForMessage();
+      
+      if (messages.length !== 1) {
+        log(`FAIL: Expected 1 message for duplicate hovers, got ${messages.length}`, false);
+        return false;
+      }
+      
+      log('PASS: Duplicate messages prevented correctly', true);
+      return true;
+    }
+    
+    async function testElementChange() {
+      log('TEST: Element Change Detection (H1 → Home → H1)', true);
+      clearMessages();
+      
+      const h1 = document.getElementById('test-h1');
+      const homeLink = document.getElementById('link-home');
+      
+      await simulateHover(h1);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await simulateHover(homeLink);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await simulateHover(h1);
+      
+      const messages = await waitForMessage();
+      
+      if (messages.length !== 3) {
+        log(`FAIL: Expected 3 messages, got ${messages.length}`, false);
+        return false;
+      }
+      
+      if (messages[0].tagName !== 'h1' || messages[1].tagName !== 'a' || messages[2].tagName !== 'h1') {
+        log(`FAIL: Incorrect sequence: ${messages.map(m => m.tagName).join(' → ')}`, false);
+        return false;
+      }
+      
+      log('PASS: Element changes tracked correctly', true);
+      return true;
+    }
+    
+    async function testAttributeExtraction() {
+      log('TEST: Attribute Extraction', true);
+      clearMessages();
+      
+      const div = document.getElementById('test-div');
+      await simulateHover(div);
+      const messages = await waitForMessage();
+      
+      if (messages.length === 0) {
+        log('FAIL: No message sent', false);
+        return false;
+      }
+      
+      const msg = messages[0];
+      
+      if (!msg.attributes) {
+        log('FAIL: No attributes object', false);
+        return false;
+      }
+      
+      if (msg.attributes.id !== 'test-div') {
+        log(`FAIL: Expected id 'test-div', got '${msg.attributes.id}'`, false);
+        return false;
+      }
+      
+      if (msg.attributes.class !== 'test-class') {
+        log(`FAIL: Expected class 'test-class', got '${msg.attributes.class}'`, false);
+        return false;
+      }
+      
+      log('PASS: Attributes extracted correctly', true);
+      return true;
+    }
+    
+    async function testRapidHovers() {
+      log('TEST: Rapid Sequential Hovers', true);
+      clearMessages();
+      
+      const elements = [
+        document.getElementById('test-h1'),
+        document.getElementById('link-home'),
+        document.getElementById('link-about'),
+        document.getElementById('link-contact'),
+        document.getElementById('test-section')
+      ];
+      
+      // Rapid hovers without delay
+      for (const el of elements) {
+        await simulateHover(el);
+      }
+      
+      const messages = await waitForMessage(300);
+      
+      if (messages.length !== 5) {
+        log(`FAIL: Expected 5 messages for rapid hovers, got ${messages.length}`, false);
+        return false;
+      }
+      
+      log('PASS: Rapid hovers handled correctly', true);
+      return true;
+    }
+    
+    window.runTests = async function() {
+      const resultsDiv = document.getElementById('results');
+      const summaryDiv = document.getElementById('summary');
+      resultsDiv.innerHTML = '<h3>Test Results:</h3>';
+      summaryDiv.innerHTML = '';
+      results.length = 0;
+      
+      const tests = [
+        testBasicTracking,
+        testAnchorTracking,
+        testSequentialAnchors,
+        testDuplicatePrevention,
+        testElementChange,
+        testAttributeExtraction,
+        testRapidHovers
+      ];
+      
+      let passed = 0;
+      let failed = 0;
+      
+      for (const test of tests) {
+        const result = await test();
+        if (result) passed++;
+        else failed++;
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+      
+      const total = passed + failed;
+      const passRate = ((passed / total) * 100).toFixed(1);
+      
+      summaryDiv.className = `summary ${failed === 0 ? 'pass' : 'fail'}`;
+      summaryDiv.innerHTML = `
+        <div>Tests Completed: ${total}</div>
+        <div style="color: #7ee787;">Passed: ${passed}</div>
+        <div style="color: #f85149;">Failed: ${failed}</div>
+        <div>Pass Rate: ${passRate}%</div>
+      `;
+      
+      if (failed === 0) {
+        log('🎉 ALL TESTS PASSED!', true);
+      } else {
+        log(`❌ ${failed} test(s) failed`, false);
+      }
+    };
+    
+    window.resetTests = function() {
+      document.getElementById('results').innerHTML = '';
+      document.getElementById('summary').innerHTML = '';
+      messageQueue = [];
+      results.length = 0;
+    };
+    
+    // Auto-run tests on load
+    setTimeout(() => {
+      log('Auto-running tests...', true);
+      runTests();
+    }, 500);
+  </script>
+</body>
+</html>
