@@ -6,16 +6,40 @@
 // opening cielovistasoftware.com could land on the contact form with the
 // header off screen, looking like the header was missing.
 //
-// A URL carrying a #hash is left alone -- that is a deliberate request for a
-// particular section, and the smooth-scroll handler below still serves it.
-if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-}
-window.addEventListener('load', function () {
-    if (!window.location.hash) {
-        window.scrollTo(0, 0);
+// One scrollTo on load is not enough: both of those happen ASYNCHRONOUSLY,
+// after load, so a single call gets overridden a frame later. This re-asserts
+// the top for a short window, and stops the moment the visitor scrolls or
+// types -- fighting someone who is deliberately scrolling would be worse than
+// the bug.
+//
+// A URL carrying a #hash is left alone: that is a deliberate request for a
+// section, and the smooth-scroll handler below still serves it.
+(function () {
+    if (window.location.hash) { return; }
+
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
     }
-});
+
+    var userMoved = false;
+    var stop = function () { userMoved = true; };
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (evt) {
+        window.addEventListener(evt, stop, { once: true, passive: true });
+    });
+
+    var toTop = function () {
+        if (!userMoved && window.scrollY !== 0) { window.scrollTo(0, 0); }
+    };
+
+    document.addEventListener('DOMContentLoaded', toTop);
+    window.addEventListener('load', function () {
+        toTop();
+        requestAnimationFrame(toTop);
+        setTimeout(toTop, 100);
+        setTimeout(toTop, 350);
+        setTimeout(function () { toTop(); userMoved = true; }, 700);
+    });
+})();
 
 // Theme configuration
 window.themes = {
