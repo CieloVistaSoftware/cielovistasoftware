@@ -560,6 +560,24 @@ if (contactForm) {
     });
 }
 
+// Clear button — empties the contact form.
+//
+// Deliberately not form.reset(): reset restores each field's DEFAULT value,
+// and a field the browser has autofilled does not reliably have an empty
+// default. Setting .value = '' clears it whatever put the text there.
+const clearFormBtn = document.getElementById('clearForm');
+if (clearFormBtn) {
+    clearFormBtn.addEventListener('click', function () {
+        const form = this.closest('form');
+        if (!form) { return; }
+        form.querySelectorAll('input, textarea').forEach(function (field) {
+            field.value = '';
+        });
+        const first = form.querySelector('input, textarea');
+        if (first) { first.focus(); }
+    });
+}
+
 // Add active state to navigation on scroll
 window.addEventListener('scroll', () => {
     const sections = document.querySelectorAll('section');

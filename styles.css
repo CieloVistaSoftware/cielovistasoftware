@@ -279,18 +279,39 @@ nav {
     color: #e0e0e0;
 }
 
+.form-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
 .contact-form button {
-    background-color: #00d4ff;
-    color: #0a0a0a;
-    border: none;
+    flex: 1;
+    background-color: var(--accent-color);
+    color: var(--bg-primary);
+    border: 1px solid var(--accent-color);
     padding: 15px;
     font-size: 1.1rem;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .contact-form button:hover {
-    background-color: #5568d3;
+    background-color: var(--accent-hover);
+}
+
+/* Secondary action: present, but never competing with Send for attention. */
+.contact-form button.clear-button {
+    flex: 0 0 auto;
+    background-color: transparent;
+    color: var(--text-paragraph);
+    border-color: var(--border-color);
+}
+
+.contact-form button.clear-button:hover {
+    background-color: transparent;
+    border-color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 footer {
