@@ -24,7 +24,7 @@ export const defaults = {
   </main>
   
   <footer>
-    <p>&copy; 2025 My Website</p>
+    <p>&copy; 2026 My Website</p>
   </footer>
 </body>
 </html>`,
