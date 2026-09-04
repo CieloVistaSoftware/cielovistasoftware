@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Welcome to our website">
-    <title>Welcome to CieloVista Software</title>
+    <meta name="description" content="Every public CieloVista Software project — live sites and source code.">
+    <title>Projects - CieloVista Software</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="mode-styles.css">
 </head>
@@ -16,13 +16,13 @@
                 <h2>Creating Ads? A breeze</h2>
             </div>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#services">Services</a></li>
                 <li><a href="article.html">Article</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="pro-website-creator/">Pro Website Creator</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
             </ul>
             <div class="theme-selector">
                 <select id="themeDropdown">
@@ -63,60 +63,24 @@
     </header>
 
     <main>
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h2>Welcome to CieloVista Software</h2>
-                <p>Building innovative solutions for your business needs</p>
-                <button class="cta-button">Get Started</button>
-            </div>
-        </section>
-
-        <section id="about" class="about">
+        <section class="projects">
             <div class="container">
-                <h2>About Us</h2>
-                <p>We are a dedicated team of professionals committed to delivering high-quality software solutions that drive business growth and innovation.</p>
-            </div>
-        </section>
+                <h2>Projects</h2>
+                <p class="projects-intro">
+                    Every public repository, listed straight from GitHub. Anything with a
+                    published site links to it; everything else links to its source.
+                </p>
 
-        <section id="services" class="services">
-            <div class="container">
-                <h2>Our Services</h2>
-                <div class="service-grid">
-                    <div class="service-card">
-                        <h3>Web Development</h3>
-                        <p>Custom web applications tailored to your needs</p>
-                    </div>
-                    <div class="service-card">
-                        <h3>Mobile Apps</h3>
-                        <p>Native and cross-platform mobile solutions</p>
-                    </div>
-                    <div class="service-card">
-                        <h3>Cloud Services</h3>
-                        <p>Scalable cloud infrastructure and deployment</p>
-                    </div>
+                <div class="projects-controls">
+                    <label class="visually-hidden" for="projectSearch">Search projects</label>
+                    <input type="search" id="projectSearch" placeholder="Search projects&hellip;" autocomplete="off">
+                    <label class="projects-toggle">
+                        <input type="checkbox" id="showForks"> Include forks
+                    </label>
                 </div>
-            </div>
-        </section>
 
-        <section id="contact" class="contact">
-            <div class="container">
-                <h2>Contact Us</h2>
-                <p class="contact-intro">Have a question or want to work together? Send us an email!</p>
-                <div class="contact-info">
-                    <div class="email-display">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                        <a href="mailto:contact@cielovistasoftware.com" class="email-link">contact@cielovistasoftware.com</a>
-                    </div>
-                </div>
-                <form class="contact-form">
-                    <input type="text" name="name" placeholder="Your Name" required>
-                    <input type="email" name="email" placeholder="Your Email" required>
-                    <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                    <button type="submit">Send Message</button>
-                </form>
+                <p id="projectStatus" class="projects-status">Loading projects&hellip;</p>
+                <div id="projectGrid" class="project-grid"></div>
             </div>
         </section>
     </main>
@@ -129,5 +93,6 @@
 
     <script src="config.js"></script>
     <script src="script.js" type="module"></script>
+    <script src="projects.js"></script>
 </body>
 </html>

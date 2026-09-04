@@ -333,3 +333,153 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Projects index
+   Every colour here is a theme variable, so all 31 themes work without
+   this file knowing any of them. */
+.projects {
+    padding: 80px 20px;
+    background-color: var(--bg-primary);
+}
+
+.projects h2 {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.projects-intro {
+    color: var(--text-paragraph);
+    max-width: 60ch;
+    margin-bottom: 2rem;
+}
+
+.projects-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.projects-controls input[type="search"] {
+    flex: 1 1 18rem;
+    padding: 0.6rem 0.9rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.projects-controls input[type="search"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.projects-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-paragraph);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.projects-status {
+    color: var(--text-paragraph);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.project-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+}
+
+/* A left edge marks the ones you can actually look at, so the eye can skip
+   straight to them without reading every card. */
+.project-card--live {
+    border-left: 3px solid var(--accent-color);
+}
+
+.project-card h3 {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    overflow-wrap: anywhere;
+}
+
+.project-tag {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--bg-primary);
+    background-color: var(--text-paragraph);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+.project-desc {
+    color: var(--text-paragraph);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.project-meta {
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-top: 0.75rem;
+}
+
+.project-links {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.project-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 0.35rem 0.8rem;
+    transition: border-color 0.3s, color 0.3s;
+}
+
+.project-link:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-hover);
+}
+
+.project-link--site {
+    border-color: var(--accent-color);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
