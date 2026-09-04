@@ -504,14 +504,14 @@ if (contactForm) {
         // Create mailto link
         const subject = encodeURIComponent(`Contact from ${name}`);
         const body = encodeURIComponent(`From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-        const mailtoLink = `mailto:contact@cielovista.com?subject=${subject}&body=${body}`;
+        const mailtoLink = `mailto:contact@cielovistasoftware.com?subject=${subject}&body=${body}`;
         
         // Open email client
         window.location.href = mailtoLink;
         
         // Optional: Show confirmation and reset form
         setTimeout(() => {
-            alert(`Thank you, ${name}! Your email client should open. If not, please email us directly at contact@cielovista.com`);
+            alert(`Thank you, ${name}! Your email client should open. If not, please email us directly at contact@cielovistasoftware.com`);
             this.reset();
         }, 100);
     });
