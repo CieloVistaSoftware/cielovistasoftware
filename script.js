@@ -540,9 +540,9 @@ if (contactForm) {
         e.preventDefault();
         
         // Get form values
-        const name = this.querySelector('#cvsSender').value;
-        const email = this.querySelector('#cvsReplyTo').value;
-        const message = this.querySelector('#cvsBody').value;
+        const name = fieldValue(this, 'sender');
+        const email = fieldValue(this, 'replyTo');
+        const message = fieldValue(this, 'body');
         
         // Create mailto link
         const subject = encodeURIComponent(`Contact from ${name}`);
@@ -565,6 +565,31 @@ if (contactForm) {
 // Deliberately not form.reset(): reset restores each field's DEFAULT value,
 // and a field the browser has autofilled does not reliably have an empty
 // default. Setting .value = '' clears it whatever put the text there.
+// Find a contact-form field regardless of which version of the HTML is loaded.
+//
+// The fields were renamed (name -> cvs-sender, etc) to stop Chromium matching
+// its saved autofill entries. But HTML and JS are cached INDEPENDENTLY: the
+// asset URLs carry a version hash, the page itself does not, so a browser can
+// run the new script.js against a cached copy of the old markup. Selecting
+// only the new ids threw a TypeError there and broke the whole form.
+//
+// Accepting both shapes means no visitor is stranded between deploys.
+const FIELD_SELECTORS = {
+    sender:  '#cvsSender, [name="cvs-sender"], [name="name"]',
+    replyTo: '#cvsReplyTo, [name="cvs-reply-to"], [name="email"]',
+    body:    '#cvsBody, [name="cvs-body"], [name="message"]'
+};
+
+function findField(form, which) {
+    if (!form) { return null; }
+    return form.querySelector(FIELD_SELECTORS[which]);
+}
+
+function fieldValue(form, which) {
+    const el = findField(form, which);
+    return el ? el.value : '';
+}
+
 const CLEARED_FLAG = 'cvs-form-cleared';
 
 // Show the confirmation if we arrived here from the Clear button.
