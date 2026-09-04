@@ -504,3 +504,27 @@ footer {
     clip: rect(0 0 0 0);
     white-space: nowrap;
 }
+
+/* Confirmation that Clear actually did something.
+   Without it, a reload landing on empty fields proves nothing -- they might
+   have been empty already. */
+.form-notice {
+    max-width: 600px;
+    margin: 0 auto 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    background-color: var(--bg-card);
+    color: var(--accent-color);
+    text-align: center;
+    font-size: 0.95rem;
+    transition: opacity 0.4s;
+}
+
+.form-notice[hidden] {
+    display: none;
+}
+
+.form-notice.is-fading {
+    opacity: 0;
+}

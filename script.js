@@ -565,6 +565,24 @@ if (contactForm) {
 // Deliberately not form.reset(): reset restores each field's DEFAULT value,
 // and a field the browser has autofilled does not reliably have an empty
 // default. Setting .value = '' clears it whatever put the text there.
+const CLEARED_FLAG = 'cvs-form-cleared';
+
+// Show the confirmation if we arrived here from the Clear button.
+function showClearNoticeIfJustCleared() {
+    let flagged = false;
+    try {
+        flagged = sessionStorage.getItem(CLEARED_FLAG) === '1';
+        sessionStorage.removeItem(CLEARED_FLAG);
+    } catch (e) { return; }
+    if (!flagged) { return; }
+
+    const notice = document.getElementById('clearNotice');
+    if (!notice) { return; }
+    notice.hidden = false;
+    setTimeout(function () { notice.classList.add('is-fading'); }, 3000);
+    setTimeout(function () { notice.hidden = true; notice.classList.remove('is-fading'); }, 3500);
+}
+
 function emptyContactForm(form, focusFirst) {
     if (!form) { return; }
     form.querySelectorAll('input, textarea').forEach(function (field) {
@@ -595,6 +613,11 @@ if (clearFormBtn) {
         // Chromium restores form values across a reload -- is handled: the
         // form is emptied on load and on pageshow, and pressing F5 after a
         // clear was tested and leaves the fields empty.
+        // Leave a note for the page we are about to become, so the reload can
+        // prove the clear happened. sessionStorage survives a reload and dies
+        // with the tab; wrapped because private mode can throw on write.
+        try { sessionStorage.setItem(CLEARED_FLAG, '1'); } catch (e) { /* ignore */ }
+
         if (window.location.hash !== '#contact') {
             window.location.hash = '#contact';
         }
@@ -618,6 +641,7 @@ if (clearFormBtn) {
 const contactFormEl = document.querySelector('.contact-form');
 if (contactFormEl) {
     emptyContactForm(contactFormEl, false);
+    showClearNoticeIfJustCleared();
     window.addEventListener('load', function () { emptyContactForm(contactFormEl, false); });
     window.addEventListener('pageshow', function () { emptyContactForm(contactFormEl, false); });
 }
