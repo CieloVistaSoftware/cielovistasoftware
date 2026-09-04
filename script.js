@@ -665,10 +665,38 @@ if (clearFormBtn) {
 // hands off to a mail client. Do not copy this to a form worth preserving.
 const contactFormEl = document.querySelector('.contact-form');
 if (contactFormEl) {
-    emptyContactForm(contactFormEl, false);
+    // Hold the form empty for a moment after load.
+    //
+    // Clearing once is not enough. Chromium fills a form ASYNCHRONOUSLY, after
+    // load and after pageshow, so a single pass runs before the browser has
+    // done its filling and the text reappears a frame later -- "it says form
+    // cleared and then it brings it back". Same shape as the scroll problem
+    // earlier: the browser acts last, so we have to act last too.
+    //
+    // It stops the instant the visitor touches the form. Wiping what someone
+    // is typing would be far worse than the bug.
+    let visitorTyping = false;
+    ['input', 'keydown', 'paste'].forEach(function (evt) {
+        contactFormEl.addEventListener(evt, function () { visitorTyping = true; }, { once: true });
+    });
+
+    const holdEmpty = function () {
+        if (!visitorTyping) { emptyContactForm(contactFormEl, false); }
+    };
+
+    holdEmpty();
     showClearNoticeIfJustCleared();
-    window.addEventListener('load', function () { emptyContactForm(contactFormEl, false); });
-    window.addEventListener('pageshow', function () { emptyContactForm(contactFormEl, false); });
+
+    const settle = function () {
+        holdEmpty();
+        requestAnimationFrame(holdEmpty);
+        [50, 150, 350, 600, 1000].forEach(function (ms) { setTimeout(holdEmpty, ms); });
+        // Then leave it alone for good.
+        setTimeout(function () { visitorTyping = true; }, 1200);
+    };
+
+    window.addEventListener('load', settle);
+    window.addEventListener('pageshow', settle);
 }
 
 // Add active state to navigation on scroll
