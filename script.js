@@ -540,9 +540,9 @@ if (contactForm) {
         e.preventDefault();
         
         // Get form values
-        const name = this.querySelector('input[name="name"]').value;
-        const email = this.querySelector('input[name="email"]').value;
-        const message = this.querySelector('textarea[name="message"]').value;
+        const name = this.querySelector('#cvsSender').value;
+        const email = this.querySelector('#cvsReplyTo').value;
+        const message = this.querySelector('#cvsBody').value;
         
         // Create mailto link
         const subject = encodeURIComponent(`Contact from ${name}`);
@@ -581,18 +581,24 @@ if (clearFormBtn) {
     clearFormBtn.addEventListener('click', function () {
         emptyContactForm(this.closest('form'), false);
 
-        // Then reload the page outright, so pressing the browser's refresh
-        // button afterwards cannot bring the old text back.
+        // Then reload, so the browser's refresh button afterwards cannot bring
+        // the old text back.
         //
-        // location.replace() rather than location.reload(): a reload is
-        // exactly the operation Chromium restores form values across, so
-        // reloading would re-fill the fields we just emptied. replace() is a
-        // fresh navigation -- no form state to restore -- and it drops the
-        // cleared page from history, so Back does not return to a filled one.
+        // reload(), not replace(). The first attempt used
+        //     location.replace(location.pathname + '#contact')
+        // which does nothing at all when you are ALREADY on /#contact -- same
+        // document, same hash, so the browser correctly treats it as a no-op.
+        // Clear emptied the fields and the page sat there, which is exactly
+        // what John reported.
         //
-        // Keeping #contact means the page comes back at the form rather than
-        // at the top, and the scroll-to-top on load stands aside for a hash.
-        window.location.replace(window.location.pathname + '#contact');
+        // reload() always navigates. The earlier worry about it -- that
+        // Chromium restores form values across a reload -- is handled: the
+        // form is emptied on load and on pageshow, and pressing F5 after a
+        // clear was tested and leaves the fields empty.
+        if (window.location.hash !== '#contact') {
+            window.location.hash = '#contact';
+        }
+        window.location.reload();
     });
 }
 
