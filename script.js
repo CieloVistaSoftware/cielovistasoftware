@@ -663,6 +663,38 @@ if (clearFormBtn) {
 //
 // Safe here because this form submits nothing that a reload could resume; it
 // hands off to a mail client. Do not copy this to a form worth preserving.
+// Chromium will not autofill a READONLY field. That is the only reliable way
+// to stop it -- autocomplete="off" is advisory and widely ignored, renaming
+// the fields only defeats name matching, and clearing on a timer is a race
+// against something that can fire whenever it likes. We lost that race twice.
+//
+// So the fields ship readonly and drop it the moment the visitor touches one.
+// By then the page has loaded and autofill has passed on it.
+//
+// Everything is unlocked together: tabbing from Name to Email must not hit a
+// field that is still readonly, and a readonly field the visitor cannot type
+// in would be a far worse bug than the one being fixed.
+function unlockContactFields(form) {
+    if (!form) { return; }
+    form.querySelectorAll('[readonly]').forEach(function (field) {
+        field.removeAttribute('readonly');
+    });
+}
+
+const contactFormForUnlock = document.querySelector('.contact-form');
+if (contactFormForUnlock) {
+    ['pointerdown', 'focusin', 'touchstart', 'keydown'].forEach(function (evt) {
+        contactFormForUnlock.addEventListener(evt, function () {
+            unlockContactFields(contactFormForUnlock);
+        }, { once: true });
+    });
+    // Belt and braces: unlock after the load settles even if untouched, so a
+    // visitor whose browser suppresses those events is never stuck.
+    window.addEventListener('load', function () {
+        setTimeout(function () { unlockContactFields(contactFormForUnlock); }, 1500);
+    });
+}
+
 const contactFormEl = document.querySelector('.contact-form');
 if (contactFormEl) {
     // Hold the form empty for a moment after load.
