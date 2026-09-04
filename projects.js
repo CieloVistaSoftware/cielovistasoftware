@@ -56,9 +56,9 @@
                 (meta ? '<p class="project-meta">' + esc(meta) + '</p>' : '') +
                 '<p class="project-links">' +
                     (site
-                        ? '<a class="project-link project-link--site" href="' + esc(site) + '">Visit site</a>'
+                        ? '<a class="project-link project-link--site" href="' + esc(site) + '" target="_blank" rel="noopener">Visit site</a>'
                         : '') +
-                    '<a class="project-link" href="' + esc(r.html_url) + '">Source</a>' +
+                    '<a class="project-link" href="' + esc(r.html_url) + '" target="_blank" rel="noopener">Source</a>' +
                 '</p>' +
             '</article>';
     }
