@@ -43,6 +43,20 @@ export const themes = {
         heroGradientStart: '#006064',
         heroGradientEnd: '#004d40'
     },
+    sapphire: {
+        bgPrimary: '#060d1f',
+        bgSecondary: '#0b1531',
+        bgCard: '#111e42',
+        bgHeader: '#0b1531',
+        textPrimary: '#dde6ff',
+        textSecondary: '#ffffff',
+        textParagraph: '#9db8ff',
+        accentColor: '#4d8bff',
+        accentHover: '#7aa8ff',
+        borderColor: '#24356e',
+        heroGradientStart: '#0f52ba',
+        heroGradientEnd: '#0a2f6b'
+    },
     forest: {
         bgPrimary: '#0d1b0d',
         bgSecondary: '#1a331a',
