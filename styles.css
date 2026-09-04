@@ -528,3 +528,35 @@ footer {
 .form-notice.is-fading {
     opacity: 0;
 }
+
+/* Contact fields.
+   Deliberately NOT <input>/<textarea>: the browser only autofills form
+   controls, so a contenteditable element cannot be autofilled at all. That
+   ends the problem rather than arguing with it. */
+.contact-form .field {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    min-height: 1.5rem;
+    outline: none;
+    overflow-wrap: anywhere;
+}
+
+.contact-form .field--message {
+    min-height: 7rem;
+}
+
+.contact-form .field:focus {
+    border-color: var(--accent-color);
+}
+
+.contact-form .field:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text-primary);
+    opacity: 0.5;
+}

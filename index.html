@@ -116,9 +116,9 @@
                 </div>
                 <p id="clearNotice" class="form-notice" role="status" hidden>Form cleared.</p>
                 <form class="contact-form" autocomplete="off">
-                    <input type="text" name="cvs-sender" id="cvsSender" readonly placeholder="Your Name" autocomplete="cvs-no-autofill" data-lpignore="true" data-1p-ignore required>
-                    <input type="email" name="cvs-reply-to" id="cvsReplyTo" readonly placeholder="Your Email" autocomplete="cvs-no-autofill" data-lpignore="true" data-1p-ignore required>
-                    <textarea name="cvs-body" id="cvsBody" readonly placeholder="Your Message" rows="5" autocomplete="cvs-no-autofill" data-lpignore="true" data-1p-ignore required></textarea>
+                    <div class="field" contenteditable="true" role="textbox" aria-label="Your Name" data-placeholder="Your Name" id="cvsSender"></div>
+                    <div class="field" contenteditable="true" role="textbox" aria-label="Your Email" data-placeholder="Your Email" id="cvsReplyTo"></div>
+                    <div class="field field--message" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Your Message" data-placeholder="Your Message" id="cvsBody"></div>
                     <div class="form-buttons">
                         <button type="submit">Send Message</button>
                         <button type="button" class="clear-button" id="clearForm">Clear</button>

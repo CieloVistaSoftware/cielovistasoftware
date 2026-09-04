@@ -587,7 +587,8 @@ function findField(form, which) {
 
 function fieldValue(form, which) {
     const el = findField(form, which);
-    return el ? el.value : '';
+    if (!el) { return ''; }
+    return (el.isContentEditable ? el.textContent : el.value) || '';
 }
 
 const CLEARED_FLAG = 'cvs-form-cleared';
@@ -613,8 +614,11 @@ function emptyContactForm(form, focusFirst) {
     form.querySelectorAll('input, textarea').forEach(function (field) {
         field.value = '';
     });
+    form.querySelectorAll('[contenteditable]').forEach(function (field) {
+        field.textContent = '';
+    });
     if (focusFirst) {
-        const first = form.querySelector('input, textarea');
+        const first = form.querySelector('input, textarea, [contenteditable]');
         if (first) { first.focus(); }
     }
 }
