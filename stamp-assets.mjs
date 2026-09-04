@@ -6,32 +6,76 @@
  *
  * WHY THIS EXISTS
  * ---------------
- * GitHub Pages serves assets with a cache lifetime, so a browser that has
- * loaded styles.css keeps using its copy after a deploy. Every fix in this
- * session -- the navigation, the mode switch, the scroll position, the Clear
- * button -- was reported as "still broken" while the server was already
- * serving the fix. The answer each time was "hard refresh", which is not a
- * fix, it is asking the user to compensate for the site.
+ * GitHub Pages serves assets with a cache lifetime, so a browser that already
+ * holds styles.css keeps using its copy after a deploy. Six separate fixes in
+ * one session were reported as broken while the server was already serving
+ * them. The answer each time was "hard refresh", which is not a fix: it asks
+ * the visitor to compensate for the site, and leaves nobody able to tell
+ * whether what they are looking at is current.
  *
- * A changing query string makes the URL itself new, so the browser cannot
- * reuse the old copy. Hash rather than a date: it changes when the code
- * changes and not otherwise, so caching still works between deploys.
+ * A changing query string makes the URL itself new, so the stale copy cannot
+ * be reused. The commit hash rather than a timestamp, so caching still works
+ * between deploys and only a real change busts it.
+ *
+ * NO REGULAR EXPRESSIONS HERE, deliberately. Two earlier versions of this file
+ * were written through a shell heredoc that swallowed their backslashes and
+ * produced an invalid regex at run time. Plain string scanning has nothing to
+ * escape and cannot fail that way.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 
-const v = execSync('git rev-parse --short HEAD').toString().trim();
+const version = execSync('git rev-parse --short HEAD').toString().trim();
 const assets = ['styles.css', 'mode-styles.css', 'config.js', 'script.js', 'projects.js', 'themes.js'];
 const pages = ['index.html', 'article.html', 'projects.html'];
 
+function stampOne(html, asset, version) {
+  const QUOTES = ['"', "'"];
+  let out = '';
+  let i = 0;
+  let count = 0;
+
+  for (;;) {
+    const at = html.indexOf(asset, i);
+    if (at === -1) { out += html.slice(i); break; }
+
+    // Only a reference that opens with a quote: skips the same name appearing
+    // in prose, in a comment, or as part of a longer filename.
+    const prev = html.charAt(at - 1);
+    const next = html.charAt(at + asset.length);
+    const isReference = QUOTES.indexOf(prev) !== -1 &&
+                        (QUOTES.indexOf(next) !== -1 || next === '?');
+    if (!isReference) {
+      out += html.slice(i, at + asset.length);
+      i = at + asset.length;
+      continue;
+    }
+
+    let after = at + asset.length;
+    if (html.startsWith('?v=', after)) {
+      while (after < html.length && QUOTES.indexOf(html.charAt(after)) === -1) { after++; }
+    }
+
+    out += html.slice(i, at) + asset + '?v=' + version;
+    i = after;
+    count++;
+  }
+
+  return { html: out, count: count };
+}
+
+let total = 0;
 for (const page of pages) {
   let html = readFileSync(page, 'utf8');
   let n = 0;
-  for (const a of assets) {
-    const re = new RegExp(`(["'])${a.replace('.', '\.')}(\?v=[^"']*)?(["'])`, 'g');
-    html = html.replace(re, (m, q1, _old, q2) => { n++; return `${q1}${a}?v=${v}${q2}`; });
+  for (const asset of assets) {
+    const result = stampOne(html, asset, version);
+    html = result.html;
+    n += result.count;
   }
   writeFileSync(page, html);
-  console.log(`  ${page}: ${n} refs -> ?v=${v}`);
+  total += n;
+  console.log('  ' + page + ': ' + n + ' refs -> ?v=' + version);
 }
-console.log('\nCommit the result. Browsers will fetch fresh copies on the next visit.');
+console.log('');
+console.log(total + ' references stamped. Commit the result.');
