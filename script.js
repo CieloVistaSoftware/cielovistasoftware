@@ -579,7 +579,20 @@ function emptyContactForm(form, focusFirst) {
 const clearFormBtn = document.getElementById('clearForm');
 if (clearFormBtn) {
     clearFormBtn.addEventListener('click', function () {
-        emptyContactForm(this.closest('form'), true);
+        emptyContactForm(this.closest('form'), false);
+
+        // Then reload the page outright, so pressing the browser's refresh
+        // button afterwards cannot bring the old text back.
+        //
+        // location.replace() rather than location.reload(): a reload is
+        // exactly the operation Chromium restores form values across, so
+        // reloading would re-fill the fields we just emptied. replace() is a
+        // fresh navigation -- no form state to restore -- and it drops the
+        // cleared page from history, so Back does not return to a filled one.
+        //
+        // Keeping #contact means the page comes back at the form rather than
+        // at the top, and the scroll-to-top on load stands aside for a hash.
+        window.location.replace(window.location.pathname + '#contact');
     });
 }
 
