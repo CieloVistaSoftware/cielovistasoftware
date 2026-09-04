@@ -1,3 +1,22 @@
+// Land at the top of the page.
+//
+// Two browser behaviours conspire to drop a visitor halfway down the site:
+// scroll restoration returns them to wherever they were on a reload, and
+// Chromium scrolls to a form field it has autofilled. Together they meant
+// opening cielovistasoftware.com could land on the contact form with the
+// header off screen, looking like the header was missing.
+//
+// A URL carrying a #hash is left alone -- that is a deliberate request for a
+// particular section, and the smooth-scroll handler below still serves it.
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.addEventListener('load', function () {
+    if (!window.location.hash) {
+        window.scrollTo(0, 0);
+    }
+});
+
 // Theme configuration
 window.themes = {
     dark: {
