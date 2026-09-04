@@ -565,17 +565,42 @@ if (contactForm) {
 // Deliberately not form.reset(): reset restores each field's DEFAULT value,
 // and a field the browser has autofilled does not reliably have an empty
 // default. Setting .value = '' clears it whatever put the text there.
+function emptyContactForm(form, focusFirst) {
+    if (!form) { return; }
+    form.querySelectorAll('input, textarea').forEach(function (field) {
+        field.value = '';
+    });
+    if (focusFirst) {
+        const first = form.querySelector('input, textarea');
+        if (first) { first.focus(); }
+    }
+}
+
 const clearFormBtn = document.getElementById('clearForm');
 if (clearFormBtn) {
     clearFormBtn.addEventListener('click', function () {
-        const form = this.closest('form');
-        if (!form) { return; }
-        form.querySelectorAll('input, textarea').forEach(function (field) {
-            field.value = '';
-        });
-        const first = form.querySelector('input, textarea');
-        if (first) { first.focus(); }
+        emptyContactForm(this.closest('form'), true);
     });
+}
+
+// Start empty on every load.
+//
+// Clearing the form and pressing refresh brought the text back. That is not
+// autofill and autocomplete="off" does not stop it: Chromium separately
+// restores form field values across a reload, so the browser was replaying
+// what had been typed before.
+//
+// Cleared on load, and again on pageshow -- which fires when the page is
+// restored from the back/forward cache, where the load event does not run at
+// all and the old values would otherwise survive.
+//
+// Safe here because this form submits nothing that a reload could resume; it
+// hands off to a mail client. Do not copy this to a form worth preserving.
+const contactFormEl = document.querySelector('.contact-form');
+if (contactFormEl) {
+    emptyContactForm(contactFormEl, false);
+    window.addEventListener('load', function () { emptyContactForm(contactFormEl, false); });
+    window.addEventListener('pageshow', function () { emptyContactForm(contactFormEl, false); });
 }
 
 // Add active state to navigation on scroll
