@@ -3,7 +3,7 @@ window.siteConfig = {
     // Mode: 'ad' or 'regular'
     // 'ad' mode - Shows promotional/advertising content (article)
     // 'regular' mode - Shows standard business content
-    mode: 'ad',
+    mode: 'regular',
     
     // Default theme to load
     defaultTheme: 'dark',
