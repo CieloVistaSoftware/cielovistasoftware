@@ -86,18 +86,18 @@ window.themes = {
         heroGradientEnd: '#004d40'
     },
     sapphire: {
-        bgPrimary: '#060d1f',
-        bgSecondary: '#0b1531',
-        bgCard: '#111e42',
-        bgHeader: '#0b1531',
-        textPrimary: '#dde6ff',
+        bgPrimary: '#0f131a',
+        bgSecondary: '#171c26',
+        bgCard: '#212631',
+        bgHeader: '#171c26',
+        textPrimary: '#f0f2f4',
         textSecondary: '#ffffff',
-        textParagraph: '#9db8ff',
-        accentColor: '#4d8bff',
-        accentHover: '#7aa8ff',
-        borderColor: '#24356e',
-        heroGradientStart: '#0f52ba',
-        heroGradientEnd: '#0a2f6b'
+        textParagraph: '#c7cad1',
+        accentColor: '#477eeb',
+        accentHover: '#93b0ec',
+        borderColor: '#2b303b',
+        heroGradientStart: '#1754cf',
+        heroGradientEnd: '#171c26'
     },
     forest: {
         bgPrimary: '#0d1b0d',
