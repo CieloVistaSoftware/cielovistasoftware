@@ -3,99 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- The asset URLs carry a version hash; this page does not, so a stale
-         copy of it could run new JS against old markup. Ask caches not to. -->
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
     <meta name="description" content="Every public CieloVista Software project — live sites and source code.">
     <title>Projects - CieloVista Software</title>
-    <link rel="stylesheet" href="styles.css?v=a4c2f25">
-    <link rel="stylesheet" href="mode-styles.css?v=a4c2f25">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/normalize.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/themes.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/site.css">
+    <link rel="stylesheet" href="list-table.css">
+    <script type="module">
+        import WB from 'https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/core/wb.js';
+        WB.init();
+    </script>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">
-                <h1>CieloVista Software © 2026</h1>
-                <h2>Creating Ads? A breeze</h2>
+    <nav x-navbar sticky brand="CieloVista Software" tagline="Creating Ads? A breeze" brandHref="index.html"
+         items="Home:index.html,About:index.html#about,Services:index.html#services,Articles:articles.html,Projects:projects.html,Contact:index.html#contact"></nav>
+    <div x-container maxWidth="1200px">
+        <div x-themecontrol></div>
+    </div>
+
+    <main x-container maxWidth="1200px" wrap="false">
+        <section>
+            <h1>Projects</h1>
+            <p>Every public repository on <a href="https://github.com/CieloVistaSoftware" target="_blank" rel="noopener">GitHub</a>,
+               listed live. Projects with a published site come first.</p>
+        </section>
+
+        <section id="projects">
+            <div class="list-table__bar">
+                <input type="search" id="projectSearch" class="list-table__filter" placeholder="Filter by name, description or language" aria-label="Filter projects" autocomplete="off">
+                <label><input type="checkbox" id="showForks"> Include forks</label>
+                <span id="projectStatus" class="list-table__count" aria-live="polite">Loading…</span>
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#services">Services</a></li>
-                <li><a href="articles.html">Articles</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
-            </ul>
-            <div class="theme-selector">
-                <select id="themeDropdown">
-                    <option value="dark">Dark Theme</option>
-                    <option value="light">Light Theme</option>
-                    <option value="ocean">Ocean Blue</option>
-                    <option value="sapphire">Sapphire Blue</option>
-                    <option value="forest">Forest Green</option>
-                    <option value="sunset">Sunset Orange</option>
-                    <option value="midnight">Midnight Purple</option>
-                    <option value="crimson">Crimson Red</option>
-                    <option value="coffee">Coffee Brown</option>
-                    <option value="slate">Slate Gray</option>
-                    <option value="mint">Mint Fresh</option>
-                    <option value="lavender">Lavender Dream</option>
-                    <option value="coral">Coral Reef</option>
-                    <option value="navy">Navy Professional</option>
-                    <option value="rose">Rose Gold</option>
-                    <option value="emerald">Emerald Green</option>
-                    <option value="amber">Amber Glow</option>
-                    <option value="indigo">Indigo Night</option>
-                    <option value="teal">Teal Wave</option>
-                    <option value="magenta">Magenta Vibe</option>
-                    <option value="charcoal">Charcoal</option>
-                    <option value="olive">Olive Garden</option>
-                    <option value="burgundy">Burgundy Wine</option>
-                    <option value="turquoise">Turquoise Bay</option>
-                    <option value="peach">Peach Soft</option>
-                    <option value="steel">Steel Blue</option>
-                    <option value="lime">Lime Green</option>
-                    <option value="plum">Plum Purple</option>
-                    <option value="sand">Sandy Beach</option>
-                    <option value="cherry">Cherry Blossom</option>
-                    <option value="arctic">Arctic White</option>
-                    <option value="neon">Neon Cyber</option>
-                </select>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        <section class="projects">
-            <div class="container">
-                <h2>Projects</h2>
-                <p class="projects-intro">
-                    Every public repository, listed straight from GitHub. Anything with a
-                    published site links to it; everything else links to its source.
-                </p>
-
-                <div class="projects-controls">
-                    <label class="visually-hidden" for="projectSearch">Search projects</label>
-                    <input type="search" id="projectSearch" placeholder="Search projects&hellip;" autocomplete="off">
-                    <label class="projects-toggle">
-                        <input type="checkbox" id="showForks"> Include forks
-                    </label>
-                </div>
-
-                <p id="projectStatus" class="projects-status">Loading projects&hellip;</p>
-                <div id="projectGrid" class="project-grid"></div>
+            <div class="list-table__wrap">
+                <table class="list-table__table" id="projects-table">
+                    <thead>
+                        <tr><th>Name</th><th>Description</th><th>Language</th><th>Updated</th><th>Stars</th><th>Site</th></tr>
+                    </thead>
+                    <tbody id="projects-body"></tbody>
+                </table>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 CieloVista Software. All rights reserved.</p>
+    <footer class="site__footer">
+        <div class="footer__content">
+            <div class="footer__left"><span>&copy; 2026 CieloVista Software. All rights reserved.</span></div>
         </div>
     </footer>
 
-    <script src="config.js?v=a4c2f25"></script>
-    <script src="script.js?v=a4c2f25" type="module"></script>
-    <script src="projects.js?v=a4c2f25"></script>
+    <script type="module" src="projects.js"></script>
 </body>
 </html>

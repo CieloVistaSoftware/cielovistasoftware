@@ -1,5 +1,6 @@
 /*
- * Projects index — lists every public repository, live from the GitHub API.
+ * Projects index — every public repository, live from the GitHub API, one
+ * table row each (cielovistasoftware#6).
  *
  * Fetched at load rather than baked in at build time, deliberately: a
  * hardcoded list is correct on the day it is written and wrong forever after.
@@ -10,124 +11,105 @@
  * and the result is cached in sessionStorage so moving around the site does
  * not spend another.
  */
-(function () {
-    'use strict';
+import { centralDate } from 'https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/core/central-time.js';
 
-    var USER = 'CieloVistaSoftware';
-    var API = 'https://api.github.com/users/' + USER + '/repos?per_page=100&sort=updated';
-    var CACHE_KEY = 'cvs-projects-v1';
+const USER = 'CieloVistaSoftware';
+const API = 'https://api.github.com/users/' + USER + '/repos?per_page=100&sort=updated';
+const CACHE_KEY = 'cvs-projects-v1';
 
-    var grid = document.getElementById('projectGrid');
-    var status = document.getElementById('projectStatus');
-    var search = document.getElementById('projectSearch');
-    var forks = document.getElementById('showForks');
-    if (!grid) { return; }
+const body = document.getElementById('projects-body');
+const status = document.getElementById('projectStatus');
+const search = document.getElementById('projectSearch');
+const forks = document.getElementById('showForks');
 
-    var repos = [];
+let repos = [];
 
-    function esc(s) {
-        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-        });
-    }
+// A repo with Pages enabled is served at /<name>/ unless it has claimed a
+// custom domain, which the API reports in `homepage`.
+function siteUrl(r) {
+    if (!r.has_pages) { return null; }
+    if (r.homepage && /^https?:\/\//.test(r.homepage)) { return r.homepage; }
+    return 'https://' + USER.toLowerCase() + '.github.io/' + r.name + '/';
+}
 
-    function when(iso) {
-        if (!iso) { return ''; }
-        var d = new Date(iso);
-        if (isNaN(d)) { return ''; }
-        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
-    }
+function link(href, text) {
+    const a = document.createElement('a');
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = text;
+    return a;
+}
 
-    // A repo with Pages enabled is served at /<name>/ unless it has claimed a
-    // custom domain, which the API reports in `homepage`.
-    function siteUrl(r) {
-        if (!r.has_pages) { return null; }
-        if (r.homepage && /^https?:\/\//.test(r.homepage)) { return r.homepage; }
-        return 'https://' + USER.toLowerCase() + '.github.io/' + r.name + '/';
-    }
+function row(r) {
+    const tr = document.createElement('tr');
+    const cell = (content) => {
+        const td = tr.insertCell();
+        if (typeof content === 'string') { td.textContent = content; } else if (content) { td.append(content); }
+        return td;
+    };
+    const name = cell(link(r.html_url, r.name));
+    if (r.fork) { name.append(' (fork)'); }
+    cell(r.description || '');
+    cell(r.language || '');
+    cell(r.pushed_at ? centralDate(r.pushed_at) : '');
+    cell(String(r.stargazers_count ?? 0));
+    const site = siteUrl(r);
+    cell(site ? link(site, 'Visit') : '');
+    return tr;
+}
 
-    function card(r) {
-        var site = siteUrl(r);
-        var meta = [r.language, when(r.pushed_at)].filter(Boolean).join(' \u00b7 ');
-        return '' +
-            '<article class="project-card' + (site ? ' project-card--live' : '') + '">' +
-                '<h3>' + esc(r.name) + (r.fork ? ' <span class="project-tag">fork</span>' : '') + '</h3>' +
-                '<p class="project-desc">' + esc(r.description || 'No description.') + '</p>' +
-                (meta ? '<p class="project-meta">' + esc(meta) + '</p>' : '') +
-                '<p class="project-links">' +
-                    (site
-                        ? '<a class="project-link project-link--site" href="' + esc(site) + '">Visit site</a>'
-                        : '') +
-                    '<a class="project-link" href="' + esc(r.html_url) + '">Source</a>' +
-                '</p>' +
-            '</article>';
-    }
+function render() {
+    const q = search.value.trim().toLowerCase();
+    const list = repos.filter((r) => {
+        if (!forks.checked && r.fork) { return false; }
+        if (!q) { return true; }
+        return (r.name + ' ' + (r.description || '') + ' ' + (r.language || '')).toLowerCase().includes(q);
+    });
 
-    function render() {
-        var q = (search && search.value || '').trim().toLowerCase();
-        var list = repos.filter(function (r) {
-            if (!forks.checked && r.fork) { return false; }
-            if (!q) { return true; }
-            return (r.name + ' ' + (r.description || '') + ' ' + (r.language || ''))
-                .toLowerCase().indexOf(q) !== -1;
-        });
+    // Anything with a site first: a visitor here wants to look at something,
+    // not read source. Within each group, most recently pushed first.
+    list.sort((a, b) => {
+        const as = a.has_pages ? 0 : 1, bs = b.has_pages ? 0 : 1;
+        if (as !== bs) { return as - bs; }
+        return String(b.pushed_at).localeCompare(String(a.pushed_at));
+    });
 
-        // Anything with a site first: a visitor here wants to look at something,
-        // not read source. Within each group, most recently pushed first.
-        list.sort(function (a, b) {
-            var as = a.has_pages ? 0 : 1, bs = b.has_pages ? 0 : 1;
-            if (as !== bs) { return as - bs; }
-            return String(b.pushed_at).localeCompare(String(a.pushed_at));
-        });
+    body.replaceChildren(...list.map(row));
 
-        grid.innerHTML = list.map(card).join('');
+    const live = list.filter((r) => r.has_pages).length;
+    status.textContent = list.length
+        ? list.length + ' project' + (list.length === 1 ? '' : 's') + ', ' + live + ' with a live site'
+        : 'Nothing matches “' + q + '”.';
+}
 
-        var live = list.filter(function (r) { return r.has_pages; }).length;
-        status.textContent = list.length
-            ? list.length + ' project' + (list.length === 1 ? '' : 's') +
-              ', ' + live + ' with a live site'
-            : 'Nothing matches \u201c' + q + '\u201d.';
-    }
+function fail(msg) {
+    status.textContent = '';
+    const td = body.insertRow().insertCell();
+    td.colSpan = 6;
+    td.append(msg + ' Every project is still on ', link('https://github.com/' + USER + '?tab=repositories', 'GitHub'), '.');
+}
 
-    function load(data) {
-        repos = data;
+let cached = null;
+try { cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null'); } catch { /* private mode */ }
+
+if (Array.isArray(cached)) {
+    repos = cached;
+    render();
+} else {
+    try {
+        const res = await fetch(API, { headers: { Accept: 'application/vnd.github+json' } });
+        if (res.status === 403) { throw new Error('rate-limited'); }
+        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+        repos = await res.json();
+        try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(repos)); } catch { /* ignore */ }
         render();
+    } catch (err) {
+        fail(err.message === 'rate-limited'
+            ? 'GitHub is rate-limiting this network right now. Try again shortly.'
+            : 'Could not reach GitHub just now.');
     }
+}
 
-    function fail(msg) {
-        status.textContent = msg;
-        grid.innerHTML = '<article class="project-card">' +
-            '<h3>Browse on GitHub</h3>' +
-            '<p class="project-desc">The list could not be loaded, but every project is ' +
-            'still available directly.</p>' +
-            '<p class="project-links"><a class="project-link project-link--site" ' +
-            'href="https://github.com/' + USER + '?tab=repositories">Open GitHub</a></p>' +
-            '</article>';
-    }
-
-    var cached = null;
-    try { cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null'); } catch (e) { /* private mode */ }
-
-    if (cached && Array.isArray(cached)) {
-        load(cached);
-    } else {
-        fetch(API, { headers: { 'Accept': 'application/vnd.github+json' } })
-            .then(function (res) {
-                if (res.status === 403) { throw new Error('rate-limited'); }
-                if (!res.ok) { throw new Error('HTTP ' + res.status); }
-                return res.json();
-            })
-            .then(function (data) {
-                try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) { /* ignore */ }
-                load(data);
-            })
-            .catch(function (err) {
-                fail(err.message === 'rate-limited'
-                    ? 'GitHub is rate-limiting this network right now. Try again shortly.'
-                    : 'Could not reach GitHub just now.');
-            });
-    }
-
-    if (search) { search.addEventListener('input', render); }
-    if (forks) { forks.addEventListener('change', render); }
-})();
+search.addEventListener('input', render);
+forks.addEventListener('change', render);

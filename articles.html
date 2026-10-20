@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/normalize.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/themes.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/site.css">
-    <link rel="stylesheet" href="articles.css">
+    <link rel="stylesheet" href="list-table.css">
     <script type="module">
         import WB from 'https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/core/wb.js';
         WB.init();
@@ -29,12 +29,12 @@
         </section>
 
         <section class="articles" id="articles">
-            <div class="articles__bar">
-                <input type="search" id="articles-filter" class="articles__filter" placeholder="Filter by title or tag" aria-label="Filter articles">
-                <span id="articles-count" class="articles__count" aria-live="polite">Loading…</span>
+            <div class="list-table__bar">
+                <input type="search" id="articles-filter" class="list-table__filter" placeholder="Filter by title or tag" aria-label="Filter articles">
+                <span id="articles-count" class="list-table__count" aria-live="polite">Loading…</span>
             </div>
-            <div class="articles__wrap">
-                <table class="articles__table" id="articles-table">
+            <div class="list-table__wrap">
+                <table class="list-table__table" id="articles-table">
                     <thead>
                         <tr><th>Title</th><th>Published</th><th>Tags</th><th>Reactions</th><th>Comments</th><th>Read</th></tr>
                     </thead>
@@ -70,7 +70,7 @@
             count.textContent = '';
             const cell = body.insertRow().insertCell();
             cell.colSpan = 6;
-            cell.className = 'articles__error';
+            cell.className = 'list-table__error';
             cell.append('Could not load the articles from dev.to (' + err.message + '). See them at ');
             const a = document.createElement('a');
             a.href = 'https://dev.to/jwp';
