@@ -1,6 +1,6 @@
-/* articles.css: layout for articles.html, moved from wb-starter (cielovistasoftware#4). Colours come only from theme variables. */
+/* list-table.css: a filterable table that becomes one card per row on a phone. Used by articles.html and projects.html. Colours come only from theme variables. */
 
-.articles__bar {
+.list-table__bar {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -8,7 +8,7 @@
   margin-bottom: 1rem;
 }
 
-.articles__filter {
+.list-table__filter {
   flex: 1 1 16rem;
   padding: 0.5rem 1rem;
   border: 0.0625rem solid var(--border-color);
@@ -17,83 +17,83 @@
   color: var(--text-primary);
 }
 
-.articles__count {
+.list-table__count {
   color: var(--text-secondary);
 }
 
-.articles__wrap {
+.list-table__wrap {
   overflow-x: auto;
 }
 
-.articles__table {
+.list-table__table {
   width: 100%;
   border-collapse: collapse;
   color: var(--text-primary);
 }
 
-.articles__table th,
-.articles__table td {
+.list-table__table th,
+.list-table__table td {
   border-bottom: 0.0625rem solid var(--border-color);
   padding: 1rem;
   text-align: left;
   vertical-align: top;
 }
 
-.articles__table th {
+.list-table__table th {
   background: var(--bg-tertiary);
 }
 
-.articles__table td:nth-child(n + 4) {
+.list-table__table td:nth-child(n + 4) {
   white-space: nowrap;
 }
 
-.articles__table td:nth-child(2) {
+.list-table__table td:nth-child(2) {
   white-space: nowrap;
 }
 
-.articles__table td:nth-child(3) {
+.list-table__table td:nth-child(3) {
   color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
-.articles__error {
+.list-table__error {
   color: var(--danger-color);
 }
 
-/* One card per article on a phone. */
+/* One card per row on a phone. */
 @media (max-width: 47.5rem) {
-  .articles__table thead {
+  .list-table__table thead {
     display: none;
   }
 
-  .articles__wrap table.articles__table,
-  .articles__table tbody,
-  .articles__table tr,
-  .articles__table td {
+  .list-table__wrap table.list-table__table,
+  .list-table__table tbody,
+  .list-table__table tr,
+  .list-table__table td {
     display: block;
     width: 100%;
   }
 
-  .articles__table tr {
+  .list-table__table tr {
     padding: 0.5rem 0;
     border-bottom: 0.0625rem solid var(--border-color);
   }
 
-  .articles__table tr[hidden] {
+  .list-table__table tr[hidden] {
     display: none;
   }
 
-  .articles__table td {
+  .list-table__table td {
     border: 0;
     padding: 0.25rem 1rem;
     white-space: normal;
   }
 
-  .articles__table td:first-child {
+  .list-table__table td:first-child {
     font-weight: 600;
   }
 
-  .articles__table td:nth-child(n + 4) {
+  .list-table__table td:nth-child(n + 4) {
     display: inline-block;
     width: auto;
     margin-right: 1rem;
@@ -101,6 +101,7 @@
     color: var(--text-secondary);
   }
 
-  .articles__table td:nth-child(4)::after { content: " reactions"; }
-  .articles__table td:nth-child(5)::after { content: " comments"; }
+  #articles-table td:nth-child(4)::after { content: " reactions"; }
+  #articles-table td:nth-child(5)::after { content: " comments"; }
+  #projects-table td:nth-child(5)::after { content: " stars"; }
 }
