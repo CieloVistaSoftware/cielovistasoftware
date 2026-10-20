@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Every article John Peters has written on dev.to">
+    <title>Articles - CieloVista Software</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/normalize.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/themes.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/styles/site.css">
+    <link rel="stylesheet" href="articles.css">
+    <script type="module">
+        import WB from 'https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/core/wb.js';
+        WB.init();
+    </script>
+</head>
+<body>
+    <nav x-navbar sticky brand="CieloVista Software" tagline="Creating Ads? A breeze" brandHref="index.html"
+         items="Home:index.html,About:index.html#about,Services:index.html#services,Articles:articles.html,Projects:projects.html,Contact:index.html#contact"></nav>
+    <div x-container maxWidth="1200px">
+        <div x-themecontrol></div>
+    </div>
+
+    <main x-container maxWidth="1200px" wrap="false">
+        <section>
+            <h1>Articles</h1>
+            <p>Everything John has written on <a href="https://dev.to/jwp" target="_blank" rel="noopener">dev.to</a>, newest first.
+               Also on this site: <a href="article.html">A.I. Code Quality</a>.</p>
+        </section>
+
+        <section class="articles" id="articles">
+            <div class="articles__bar">
+                <input type="search" id="articles-filter" class="articles__filter" placeholder="Filter by title or tag" aria-label="Filter articles">
+                <span id="articles-count" class="articles__count" aria-live="polite">Loading…</span>
+            </div>
+            <div class="articles__wrap">
+                <table class="articles__table" id="articles-table">
+                    <thead>
+                        <tr><th>Title</th><th>Published</th><th>Tags</th><th>Reactions</th><th>Comments</th><th>Read</th></tr>
+                    </thead>
+                    <tbody id="articles-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site__footer">
+        <div class="footer__content">
+            <div class="footer__left"><span>&copy; 2026 CieloVista Software. All rights reserved.</span></div>
+        </div>
+    </footer>
+
+    <script type="module">
+        /* Every dev.to article by jwp, fetched live. The API allows cross-origin
+           reads and returns all of them in one call. Moved here from
+           wb-starter's pages/articles.html (cielovistasoftware#4). */
+        import { centralDate } from 'https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/core/central-time.js';
+
+        const API = 'https://dev.to/api/articles?username=jwp&per_page=2000';
+        const body = document.getElementById('articles-body');
+        const count = document.getElementById('articles-count');
+        const filter = document.getElementById('articles-filter');
+
+        let articles;
+        try {
+            const res = await fetch(API);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            articles = await res.json();
+        } catch (err) {
+            count.textContent = '';
+            const cell = body.insertRow().insertCell();
+            cell.colSpan = 6;
+            cell.className = 'articles__error';
+            cell.append('Could not load the articles from dev.to (' + err.message + '). See them at ');
+            const a = document.createElement('a');
+            a.href = 'https://dev.to/jwp';
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = 'dev.to/jwp';
+            cell.append(a, '.');
+        }
+
+        if (articles) {
+            articles.sort((a, b) => String(b.published_at).localeCompare(String(a.published_at)));
+
+            const cell = (row, text) => {
+                const td = row.insertCell();
+                if (text !== undefined) td.textContent = text;
+                return td;
+            };
+
+            for (const art of articles) {
+                const row = body.insertRow();
+                row.searchText = (art.title + ' ' + (art.tag_list || []).join(' ')).toLowerCase();
+                const a = document.createElement('a');
+                a.href = art.url;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.textContent = art.title;
+                cell(row).append(a);
+                cell(row, centralDate(art.published_at));
+                cell(row, (art.tag_list || []).map((t) => '#' + t).join(' '));
+                cell(row, String(art.public_reactions_count ?? 0));
+                cell(row, String(art.comments_count ?? 0));
+                cell(row, (art.reading_time_minutes ?? 0) + ' min');
+            }
+
+            const show = () => {
+                const q = filter.value.trim().toLowerCase();
+                let n = 0;
+                for (const row of body.rows) {
+                    const hit = !q || row.searchText.includes(q);
+                    row.hidden = !hit;
+                    if (hit) n++;
+                }
+                count.textContent = q ? n + ' of ' + articles.length + ' articles' : articles.length + ' articles';
+            };
+            filter.addEventListener('input', show);
+            show();
+        }
+    </script>
+</body>
+</html>
