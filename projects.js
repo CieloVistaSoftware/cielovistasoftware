@@ -11,7 +11,7 @@
  * and the result is cached in sessionStorage so moving around the site does
  * not spend another.
  */
-import { centralDate } from 'https://cdn.jsdelivr.net/npm/wb-starter@1.0.1/src/core/central-time.js';
+import { centralDate } from 'https://cdn.jsdelivr.net/gh/CieloVistaSoftware/wb-starter@a7d9d012b02b5d65c7f1ff4aad0ab3374788fd39/src/core/central-time.js';
 
 const USER = 'CieloVistaSoftware';
 const API = 'https://api.github.com/users/' + USER + '/repos?per_page=100&sort=updated';
