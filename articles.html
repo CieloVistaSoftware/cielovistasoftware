@@ -93,9 +93,8 @@
                 const row = body.insertRow();
                 row.searchText = (art.title + ' ' + (art.tag_list || []).join(' ')).toLowerCase();
                 const a = document.createElement('a');
-                a.href = art.url;
-                a.target = '_blank';
-                a.rel = 'noopener';
+                // Opens on our own site, not dev.to, whose page carries its ads (#10).
+                a.href = 'read.html?id=' + encodeURIComponent(art.id);
                 a.textContent = art.title;
                 cell(row).append(a);
                 cell(row, centralDate(art.published_at));
