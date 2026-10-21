@@ -1,0 +1,12 @@
+{
+  "short_name": "CieloVista",
+  "name": "CieloVista Software",
+  "icons": [
+    { "src": "icon.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "icon.svg", "type": "image/svg+xml", "sizes": "any" }
+  ],
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a"
+}
