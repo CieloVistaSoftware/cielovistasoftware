@@ -1,0 +1,77 @@
+/* read.css: one hosted dev.to article (read.html, #10). Colours come only from theme variables. */
+
+.read__title {
+  margin-bottom: 0.5rem;
+}
+
+.read__meta,
+.read__tags,
+.read__source {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.read__cover {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+}
+
+.read__body {
+  line-height: 1.7;
+}
+
+/* Images, embeds and tables never wider than the column. */
+.read__body img,
+.read__body video,
+.read__body iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+.read__body iframe {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: 0;
+}
+
+.read__body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Code scrolls inside its own box, never the page. */
+.read__body pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: var(--bg-tertiary);
+}
+
+.read__body :not(pre) > code {
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  background: var(--bg-tertiary);
+}
+
+.read__body blockquote {
+  margin: 1rem 0;
+  padding: 0 1rem;
+  border-left: 0.25rem solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* dev.to's own anchor icons beside headings. */
+.read__body .anchor {
+  display: none;
+}
+
+.read__source {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 0.0625rem solid var(--border-color);
+}

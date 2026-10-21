@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An article by John Peters">
+    <title>Article - CieloVista Software</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/CieloVistaSoftware/wb-starter@a7d9d012b02b5d65c7f1ff4aad0ab3374788fd39/src/styles/normalize.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/CieloVistaSoftware/wb-starter@a7d9d012b02b5d65c7f1ff4aad0ab3374788fd39/src/styles/themes.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/CieloVistaSoftware/wb-starter@a7d9d012b02b5d65c7f1ff4aad0ab3374788fd39/src/styles/site.css">
+    <link rel="stylesheet" href="read.css">
+    <script type="module">
+        import WB from 'https://cdn.jsdelivr.net/gh/CieloVistaSoftware/wb-starter@a7d9d012b02b5d65c7f1ff4aad0ab3374788fd39/src/core/wb.js';
+        WB.init();
+    </script>
+</head>
+<body>
+    <nav x-navbar sticky brand="CieloVista Software" tagline="Creating Ads? A breeze" brandHref="index.html"
+         items="Home:index.html,About:index.html#about,Services:index.html#services,Articles:articles.html,Projects:projects.html,Contact:index.html#contact"></nav>
+    <div x-container maxWidth="1200px">
+        <div x-themecontrol></div>
+    </div>
+
+    <main x-container maxWidth="820px" wrap="false">
+        <p><a href="articles.html">&larr; All articles</a></p>
+        <article class="read" id="read" aria-live="polite">
+            <p class="read__meta">Loading…</p>
+        </article>
+    </main>
+
+    <footer class="site__footer">
+        <div class="footer__content">
+            <div class="footer__left"><span>&copy; 2026 CieloVista Software. All rights reserved.</span></div>
+        </div>
+    </footer>
+
+    <script type="module">
+        /* One dev.to article, shown on our own site so readers never land on
+           dev.to's page and its advertising (cielovistasoftware#10). The API
+           allows cross-origin reads; body_html is the article as dev.to
+           renders it. */
+        import { centralDate } from 'https://cdn.jsdelivr.net/gh/CieloVistaSoftware/wb-starter@a7d9d012b02b5d65c7f1ff4aad0ab3374788fd39/src/core/central-time.js';
+
+        const root = document.getElementById('read');
+        const id = new URLSearchParams(location.search).get('id');
+
+        const el = (tag, cls, text) => {
+            const e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (text !== undefined) e.textContent = text;
+            return e;
+        };
+
+        function failed(msg) {
+            root.replaceChildren(el('p', 'read__meta', msg + ' '));
+            const back = el('a', '', 'See all articles');
+            back.href = 'articles.html';
+            root.firstChild.append(back, '.');
+        }
+
+        if (!id || !/^\d+$/.test(id)) {
+            failed('No article was chosen.');
+        } else {
+            try {
+                const res = await fetch('https://dev.to/api/articles/' + id);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const art = await res.json();
+
+                document.title = art.title + ' - CieloVista Software';
+
+                // The article body, without anything that runs: no scripts,
+                // and no inline event handlers.
+                const doc = new DOMParser().parseFromString(art.body_html || '', 'text/html');
+                doc.querySelectorAll('script').forEach((s) => s.remove());
+                doc.querySelectorAll('*').forEach((n) => {
+                    for (const attr of [...n.attributes]) {
+                        if (/^on/i.test(attr.name)) n.removeAttribute(attr.name);
+                    }
+                });
+                // Links inside the article open in a new tab, so the reader keeps their place here.
+                doc.querySelectorAll('a[href^="http"]').forEach((a) => { a.target = '_blank'; a.rel = 'noopener'; });
+
+                const parts = [el('h1', 'read__title', art.title)];
+                const meta = [centralDate(art.published_at), (art.reading_time_minutes ?? 0) + ' min read'];
+                parts.push(el('p', 'read__meta', meta.join(' · ')));
+                if (art.tag_list && art.tag_list.length) {
+                    const tags = Array.isArray(art.tag_list) ? art.tag_list : String(art.tag_list).split(/,\s*/);
+                    parts.push(el('p', 'read__tags', tags.map((t) => '#' + t).join(' ')));
+                }
+                if (art.cover_image) {
+                    const img = el('img', 'read__cover');
+                    img.src = art.cover_image;
+                    img.alt = '';
+                    parts.push(img);
+                }
+                const bodyEl = el('div', 'read__body');
+                bodyEl.append(...doc.body.childNodes);
+                parts.push(bodyEl);
+
+                const foot = el('p', 'read__source', 'Comments and reactions are on ');
+                const src = el('a', '', 'dev.to');
+                src.href = art.url;
+                src.target = '_blank';
+                src.rel = 'noopener';
+                foot.append(src, '.');
+                parts.push(foot);
+
+                root.replaceChildren(...parts);
+            } catch (err) {
+                failed('Could not load this article from dev.to (' + err.message + ').');
+            }
+        }
+    </script>
+</body>
+</html>
